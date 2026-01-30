@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 
 import { Logo, LogoImage, LogoText } from "@/components/ui/logo";
+import footerLogo from "../../../public/logo.webp";
+import Image from "next/image";
 
 interface MenuItem {
   title: string;
@@ -30,12 +32,12 @@ interface Footer2Props {
 const Footer = ({
   logo = {
     src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-1.svg",
-    alt: "blocks for shadcn/ui",
+    alt: "logo",
     title: "FoodHub",
-    url: "https://www.shadcnblocks.com",
+    url: "/",
   },
   className,
-  tagline = "Donec commodo diam pulvinar tellus cursus, sed maximus augue consequat.",
+  tagline = "Discover & Order Delicious Meals",
   menuItems = [
     {
       title: "Product",
@@ -82,13 +84,12 @@ const Footer = ({
             <div className="mb-8 lg:mb-0">
               <div className="flex items-center gap-2 lg:justify-start">
                 <Logo url="https://shadcnblocks.com">
-                  <LogoImage
-                    src={logo.src}
+                  <Image
+                    src={footerLogo}
                     alt={logo.alt}
                     title={logo.title}
-                    className="h-10 dark:invert"
+                    className="h-10 w-fit dark:invert"
                   />
-                  <LogoText className="text-xl">{logo.title}</LogoText>
                 </Logo>
               </div>
               <p className="mt-4 font-medium text-muted-foreground">
@@ -98,7 +99,9 @@ const Footer = ({
             <div className="flex justify-center gap-20">
               {menuItems.map((section, sectionIdx) => (
                 <div key={sectionIdx}>
-                  <h3 className="mb-4 font-bold">{section.title}</h3>
+                  <h3 className="mb-4 text-primary font-bold">
+                    {section.title}
+                  </h3>
                   <ul className="space-y-4 text-muted-foreground">
                     {section.links.map((link, linkIdx) => (
                       <li

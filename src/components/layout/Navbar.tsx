@@ -20,6 +20,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import Link from "next/link";
+import navLogo from "../../../public/logo.webp";
+import navIcon from "../../../public/icon.webp";
+import Image from "next/image";
 
 interface MenuItem {
   title: string;
@@ -56,13 +59,13 @@ const Navbar = ({
     url: "/",
     src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
     alt: "logo",
-    title: "Draftly",
+    title: "FoodHub",
   },
   menu = [
     { title: "Home", url: "/" },
     {
-      title: "Blogs",
-      url: "/blogs",
+      title: "Browse",
+      url: "/browse",
     },
     {
       title: "About",
@@ -91,14 +94,11 @@ const Navbar = ({
           <div className="flex items-center gap-6">
             {/* Logo */}
             <Link href={logo.url} className="flex items-center gap-2">
-              <img
-                src={logo.src}
-                className="max-h-8 dark:invert"
+              <Image
+                src={navLogo}
+                className="max-h-8 w-fit dark:invert"
                 alt={logo.alt}
               />
-              <span className="text-lg font-semibold tracking-tighter">
-                {logo.title}
-              </span>
             </Link>
             <div className="flex items-center">
               <NavigationMenu>
@@ -123,9 +123,9 @@ const Navbar = ({
           <div className="flex items-center justify-between">
             {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">
-              <img
-                src={logo.src}
-                className="max-h-8 dark:invert"
+              <Image
+                src={navIcon}
+                className="max-h-8 w-fit dark:invert"
                 alt={logo.alt}
               />
             </a>
@@ -139,9 +139,9 @@ const Navbar = ({
                 <SheetHeader>
                   <SheetTitle>
                     <a href={logo.url} className="flex items-center gap-2">
-                      <img
-                        src={logo.src}
-                        className="max-h-8 dark:invert"
+                      <Image
+                        src={navIcon}
+                        className="max-h-8 w-fit dark:invert"
                         alt={logo.alt}
                       />
                     </a>
@@ -179,7 +179,6 @@ const renderMenuItem = (item: MenuItem) => {
     <NavigationMenuItem key={item.title}>
       <NavigationMenuLink
         asChild
-        // className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
         className="group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
       >
         <Link href={item.url}>{item.title}</Link>
