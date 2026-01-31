@@ -45,7 +45,7 @@ export default function DualActionSplitSection({
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Optional Section Heading */}
         <div className="mb-12 md:mb-16 text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-2">
             How Do You Want to Explore?
           </h2>
         </div>

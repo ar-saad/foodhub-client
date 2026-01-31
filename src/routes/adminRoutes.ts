@@ -1,10 +1,15 @@
 import { Route } from "@/types";
-import { ChefHat, User } from "lucide-react";
+import { LayoutDashboard, User, ChefHat } from "lucide-react";
 
 export const adminRoutes: Route[] = [
   {
     title: "User Management",
     items: [
+      {
+        title: "Home",
+        url: "/admin-dashboard",
+        icon: LayoutDashboard,
+      },
       {
         title: "User List",
         url: "/admin-dashboard/users",
