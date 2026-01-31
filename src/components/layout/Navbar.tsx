@@ -1,6 +1,6 @@
 "use client";
 
-import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
+import { Menu } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import navLogo from "../../../public/logo.webp";
-import navIcon from "../../../public/icon.webp";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -36,7 +35,7 @@ interface MenuItem {
   items?: MenuItem[];
 }
 
-interface Navbar1Props {
+interface NavbarProps {
   className?: string;
   logo?: {
     url: string;
@@ -56,7 +55,9 @@ interface Navbar1Props {
       url: string;
     };
   };
-  user: object;
+  user: {
+    role: string;
+  };
 }
 
 const Navbar = ({
@@ -89,9 +90,9 @@ const Navbar = ({
     login: { title: "Login", url: "/login" },
     signup: { title: "Register", url: "/register" },
   },
-  className,
   user,
-}: Navbar1Props) => {
+  className,
+}: NavbarProps) => {
   const dashboardUrl = (() => {
     const role = (user as { role?: string } | null)?.role;
     switch (role) {
@@ -155,10 +156,24 @@ const Navbar = ({
           <div className="flex gap-2">
             {user ? (
               <>
+                {!user ||
+                  (user?.role === UserRoles.customer && (
+                    <Link href="/become-partner">
+                      <Button className="bg-orange-400 hover:bg-orange-500">
+                        Become a Partner
+                      </Button>
+                    </Link>
+                  ))}
                 <Button onClick={() => handleLogout()}>Logout</Button>
               </>
             ) : (
               <>
+                <Link href="/become-partner">
+                  <Button className="bg-orange-400 hover:bg-orange-500">
+                    Become a Partner
+                  </Button>
+                </Link>
+
                 <Button asChild variant="outline" size="sm">
                   <Link href={auth.login.url}>{auth.login.title}</Link>
                 </Button>
@@ -176,7 +191,7 @@ const Navbar = ({
             {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">
               <Image
-                src={navIcon}
+                src={navLogo}
                 className="max-h-8 w-fit dark:invert"
                 alt={logo.alt}
               />
@@ -192,7 +207,7 @@ const Navbar = ({
                   <SheetTitle>
                     <a href={logo.url} className="flex items-center gap-2">
                       <Image
-                        src={navIcon}
+                        src={navLogo}
                         className="max-h-8 w-fit dark:invert"
                         alt={logo.alt}
                       />
@@ -211,12 +226,36 @@ const Navbar = ({
                   </Accordion>
 
                   <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline">
-                      <Link href={auth.login.url}>{auth.login.title}</Link>
-                    </Button>
-                    <Button asChild>
-                      <Link href={auth.signup.url}>{auth.signup.title}</Link>
-                    </Button>
+                    {user ? (
+                      <>
+                        {!user ||
+                          (user?.role === UserRoles.customer && (
+                            <Button>Become a Partner</Button>
+                          ))}
+                        <Link href="/become-partner">
+                          <Button className="bg-orange-400 hover:bg-orange-500">
+                            Become a Partner
+                          </Button>
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <Link href="/become-partner">
+                          <Button className="bg-orange-400 hover:bg-orange-500">
+                            Become a Partner
+                          </Button>
+                        </Link>
+
+                        <Button asChild variant="outline" size="sm">
+                          <Link href={auth.login.url}>{auth.login.title}</Link>
+                        </Button>
+                        <Button asChild size="sm">
+                          <Link href={auth.signup.url}>
+                            {auth.signup.title}
+                          </Link>
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>

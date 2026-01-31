@@ -53,6 +53,7 @@ export function LoginForm({
         }
 
         toast.success("User login successful", { id: toastId });
+        window.location.href = "/";
       } catch (error) {
         console.error(error);
 
