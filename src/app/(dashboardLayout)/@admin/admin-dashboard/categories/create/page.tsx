@@ -1,7 +1,9 @@
+import { CreateCategoryForm } from "@/components/modules/adminDashboard/category/CreateCategoryForm";
+
 export default function CreateCategoryPage() {
   return (
-    <div>
-      <h1>Create Category Page</h1>
+    <div className="container mx-auto py-8">
+      <CreateCategoryForm />
     </div>
   );
 }

@@ -10,7 +10,7 @@ export default async function CategoryListPage() {
   return (
     <div>
       {/* Header Section */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-2">
         <div>
           <h1 className="text-3xl font-bold text-primary">Categories</h1>
           <p className="text-muted-foreground mt-1">

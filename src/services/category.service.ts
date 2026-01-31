@@ -34,4 +34,46 @@ export const categoryService = {
       return { data: null, error: { message: "Something went wrong." } };
     }
   },
+  create: async function (categoryData: {
+    name: string;
+    emoji: string;
+    image: string;
+  }): Promise<{
+    data: Category | null;
+    error: { message: string } | null;
+  }> {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/categories`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(categoryData),
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        return {
+          data: null,
+          error: {
+            message: errorData?.message || "Failed to create category.",
+          },
+        };
+      }
+
+      const result = await res.json();
+
+      return { data: result.data, error: null };
+    } catch (error) {
+      console.error(error);
+      return {
+        data: null,
+        error: { message: "Something went wrong." },
+      };
+    }
+  },
 };

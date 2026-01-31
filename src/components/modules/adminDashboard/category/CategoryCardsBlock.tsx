@@ -35,6 +35,8 @@ export default function CategoryCardsBlock({
               "group overflow-hidden",
               "hover:shadow-lg transition-all duration-200",
               "cursor-pointer",
+              "border border-primary",
+              "py-0 gap-1",
             )}
           >
             <div className="relative aspect-video w-full overflow-hidden bg-muted">
