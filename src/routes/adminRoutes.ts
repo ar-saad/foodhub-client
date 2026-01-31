@@ -1,5 +1,5 @@
 import { Route } from "@/types";
-import { ChartNoAxesCombined, User } from "lucide-react";
+import { ChefHat, User } from "lucide-react";
 
 export const adminRoutes: Route[] = [
   {
@@ -7,13 +7,13 @@ export const adminRoutes: Route[] = [
     items: [
       {
         title: "User List",
-        url: "/users",
+        url: "/admin-dashboard/users",
         icon: User,
       },
       {
-        title: "Analytics",
-        url: "/analytics",
-        icon: ChartNoAxesCombined,
+        title: "Categories",
+        url: "/admin-dashboard/categories",
+        icon: ChefHat,
       },
     ],
   },

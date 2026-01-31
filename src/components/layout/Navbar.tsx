@@ -23,6 +23,10 @@ import Link from "next/link";
 import navLogo from "../../../public/logo.webp";
 import navIcon from "../../../public/icon.webp";
 import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { redirect } from "next/navigation";
+import { UserRoles } from "@/constants/userRoles";
 
 interface MenuItem {
   title: string;
@@ -52,6 +56,7 @@ interface Navbar1Props {
       url: string;
     };
   };
+  user: object;
 }
 
 const Navbar = ({
@@ -85,7 +90,44 @@ const Navbar = ({
     signup: { title: "Register", url: "/register" },
   },
   className,
+  user,
 }: Navbar1Props) => {
+  const dashboardUrl = (() => {
+    const role = (user as { role?: string } | null)?.role;
+    switch (role) {
+      case UserRoles.admin:
+        return "/admin-dashboard";
+      case UserRoles.provider:
+        return "/provider-dashboard";
+      case UserRoles.customer:
+        return "/dashboard";
+      default:
+        return "/dashboard";
+    }
+  })();
+
+  const menuWithDashboard = menu.map((item) =>
+    item.title === "Dashboard" ? { ...item, url: dashboardUrl } : item,
+  );
+
+  const handleLogout = async () => {
+    const toastId = toast.loading("User logout processing");
+    try {
+      const { data, error } = await authClient.signOut();
+
+      if (error) {
+        toast.error(error.message, { id: toastId });
+        return;
+      }
+
+      window.location.href = "/";
+    } catch (error) {
+      console.error(error);
+
+      toast.error("Something went wrong, please try again", { id: toastId });
+    }
+  };
+
   return (
     <section
       className={cn("py-4 w-full sticky top-0 z-10 bg-white", className)}
@@ -105,18 +147,26 @@ const Navbar = ({
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList>
-                  {menu.map((item) => renderMenuItem(item))}
+                  {menuWithDashboard.map((item) => renderMenuItem(item))}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
           </div>
           <div className="flex gap-2">
-            <Button asChild variant="outline" size="sm">
-              <Link href={auth.login.url}>{auth.login.title}</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href={auth.signup.url}>{auth.signup.title}</Link>
-            </Button>
+            {user ? (
+              <>
+                <Button onClick={() => handleLogout()}>Logout</Button>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="outline" size="sm">
+                  <Link href={auth.login.url}>{auth.login.title}</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                </Button>
+              </>
+            )}
           </div>
         </nav>
 
@@ -155,7 +205,9 @@ const Navbar = ({
                     collapsible
                     className="flex w-full flex-col gap-4"
                   >
-                    {menu.map((item) => renderMobileMenuItem(item))}
+                    {menuWithDashboard.map((item) =>
+                      renderMobileMenuItem(item),
+                    )}
                   </Accordion>
 
                   <div className="flex flex-col gap-3">

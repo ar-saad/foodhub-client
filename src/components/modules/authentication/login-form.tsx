@@ -62,6 +62,7 @@ export function LoginForm({
   });
 
   const handleGoogleLogin = async () => {
+    toast.loading("User login processing");
     await authClient.signIn.social({
       provider: "google",
       callbackURL: env.NEXT_PUBLIC_FRONTEND_URL,

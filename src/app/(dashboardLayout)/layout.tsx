@@ -11,13 +11,28 @@ import { userService } from "@/services/user.service";
 
 export default async function DashboardLayout({
   admin,
-  user,
+  provider,
+  customer,
 }: {
   admin: React.ReactNode;
-  user: React.ReactNode;
+  provider: React.ReactNode;
+  customer: React.ReactNode;
 }) {
   const { data } = await userService.getSession();
   const userInfo = data.user;
+
+  // Validate role exists
+  if (!userInfo?.role || !Object.values(UserRoles).includes(userInfo.role)) {
+    throw new Error("Invalid or missing user role");
+  }
+
+  const roleRouteMap = {
+    [UserRoles.admin]: admin,
+    [UserRoles.provider]: provider,
+    [UserRoles.customer]: customer,
+  } as const;
+
+  const content = roleRouteMap[userInfo.role];
 
   return (
     <SidebarProvider>
@@ -31,9 +46,7 @@ export default async function DashboardLayout({
           />
           <DynamicBreadcrumb />
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          {userInfo.role === UserRoles.admin ? admin : user}
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-4">{content}</div>
       </SidebarInset>
     </SidebarProvider>
   );
