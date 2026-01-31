@@ -70,7 +70,7 @@ const Footer = ({
       ],
     },
   ],
-  copyright = "© 2024 Shadcnblocks.com. All rights reserved.",
+  copyright = `© ${new Date().getFullYear()} FoodHub. All rights reserved.`,
   bottomLinks = [
     { text: "Terms and Conditions", url: "#" },
     { text: "Privacy Policy", url: "#" },
@@ -78,12 +78,12 @@ const Footer = ({
 }: Footer2Props) => {
   return (
     <section className={cn("pt-32 pb-12 px-16", className)}>
-      <div className="container">
+      <div className="container mx-auto px-4">
         <footer>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="mb-8 lg:mb-0">
               <div className="flex items-center gap-2 lg:justify-start">
-                <Logo url="https://shadcnblocks.com">
+                <Logo url="/">
                   <Image
                     src={footerLogo}
                     alt={logo.alt}
