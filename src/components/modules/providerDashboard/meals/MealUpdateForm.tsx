@@ -145,32 +145,6 @@ export default function MealUpdateForm({
             }}
           >
             <FieldGroup className="space-y-6">
-              {/* Name Field */}
-              <form.Field
-                name="name"
-                children={(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Meal Name</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        placeholder="e.g., Margherita Pizza, Caesar Salad"
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        onBlur={field.handleBlur}
-                      />
-
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              />
-
               {/* Category Field with Select */}
               <form.Field
                 name="categoryId"
@@ -195,6 +169,32 @@ export default function MealUpdateForm({
                           ))}
                         </SelectContent>
                       </Select>
+
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+
+              {/* Name Field */}
+              <form.Field
+                name="name"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>Meal Name</FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        placeholder="e.g., Margherita Pizza, Caesar Salad"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        onBlur={field.handleBlur}
+                      />
 
                       {isInvalid && (
                         <FieldError errors={field.state.meta.errors} />
