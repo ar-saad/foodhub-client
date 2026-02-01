@@ -24,7 +24,7 @@ import { createCategory } from "@/actions/category.actions";
 import { useRouter } from "next/navigation";
 import ImageUpload, {
   ImageUploadRef,
-} from "@/components/ui/image-upload-input";
+} from "@/components/common/image-upload-input";
 import { useRef } from "react";
 
 const formSchema = z.object({

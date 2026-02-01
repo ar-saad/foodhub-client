@@ -22,7 +22,7 @@ import * as z from "zod";
 import { toast } from "sonner";
 import ImageUpload, {
   ImageUploadRef,
-} from "@/components/ui/image-upload-input";
+} from "@/components/common/image-upload-input";
 import { useRef } from "react";
 import { createPartnerProfile } from "@/actions/provider.actions";
 import { useRouter } from "next/navigation";

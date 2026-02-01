@@ -32,10 +32,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Category } from "@/types";
-import { createMeal } from "@/actions/meal.actions";
+import { Category, Meal } from "@/types";
+import { updateMeal } from "@/actions/meal.actions";
 import { User } from "@/types/user.type";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const formSchema = z.object({
   name: z
@@ -55,10 +56,12 @@ const formSchema = z.object({
   isFeatured: z.boolean(),
 });
 
-export default function MealCreateForm({
+export default function MealUpdateForm({
+  meal,
   categories,
   user,
 }: {
+  meal: Meal;
   categories: Category[];
   user: User;
 }) {
@@ -67,36 +70,39 @@ export default function MealCreateForm({
 
   const form = useForm({
     defaultValues: {
-      name: "",
-      categoryId: "",
-      description: "",
-      price: 0,
-      isAvailable: true,
-      isFeatured: false,
+      name: meal.name,
+      categoryId: meal.categoryId,
+      description: meal.description,
+      price: Number(meal.price) || 0,
+      isAvailable: meal.isAvailable,
+      isFeatured: meal.isFeatured,
     },
     validators: {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      const toastId = toast.loading("Creating meal");
+      const toastId = toast.loading("Updating meal");
       try {
-        // Upload image first
-        const imageUrl = await imageUploadRef.current?.uploadToCloudinary();
+        // Check if user selected a new image
+        let imageUrl = meal.image; // Default to existing image
+        const hasNewImage = imageUploadRef.current?.hasFileSelected();
 
-        if (!imageUrl) {
-          toast.error("Please select an image", { id: toastId });
-          return;
-        }
+        if (hasNewImage) {
+          // Upload new image only if user selected one
+          imageUrl =
+            (await imageUploadRef.current?.uploadToCloudinary()) || meal.image;
 
-        // Validate the uploaded URL
-        try {
-          new URL(imageUrl); // Check if it's a valid URL
-        } catch {
-          toast.error("Invalid image URL received", { id: toastId });
-          return;
+          // Validate the uploaded URL
+          try {
+            new URL(imageUrl); // Check if it's a valid URL
+          } catch {
+            toast.error("Invalid image URL received", { id: toastId });
+            return;
+          }
         }
 
         const payload = {
+          mealId: meal.id,
           providerId: user?.providerProfile?.id || "",
           categoryId: value.categoryId,
           name: value.name,
@@ -107,14 +113,14 @@ export default function MealCreateForm({
           isFeatured: value.isFeatured,
         };
 
-        const { data, error } = await createMeal(payload);
+        const { data, error } = await updateMeal(payload);
 
         if (error) {
           toast.error(error.message, { id: toastId });
           return;
         }
 
-        toast.success("Meal created successfully", { id: toastId });
+        toast.success("Meal updated successfully", { id: toastId });
         router.push("/provider-dashboard/meals");
       } catch (error) {
         console.error(error);
@@ -124,14 +130,12 @@ export default function MealCreateForm({
     },
   });
 
-  console.log(user);
-
   return (
     <div>
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl text-primary">Create Meal</CardTitle>
-          <CardDescription>Add a new meal to your menu</CardDescription>
+          <CardTitle className="text-3xl text-primary">Update Meal</CardTitle>
+          <CardDescription>Update your meal information</CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -271,6 +275,19 @@ export default function MealCreateForm({
                 <ImageUpload ref={imageUploadRef} folder="foodhub/meals" />
               </Field>
 
+              <Field>
+                <FieldLabel>Current Image</FieldLabel>
+                <div className="relative">
+                  <Image
+                    src={meal?.image}
+                    alt="meal photo"
+                    width={350}
+                    height={250}
+                    className="max-h-40 max-w-80 h-auto w-auto object-contain"
+                  />
+                </div>
+              </Field>
+
               {/* isAvailable Checkbox */}
               <form.Field
                 name="isAvailable"
@@ -337,7 +354,7 @@ export default function MealCreateForm({
                 className="w-full"
                 disabled={form.state.isSubmitting}
               >
-                {form.state.isSubmitting ? "Creating Meal..." : "Create Meal"}
+                {form.state.isSubmitting ? "Updating Meal..." : "Update Meal"}
               </Button>
             </FieldGroup>
           </form>

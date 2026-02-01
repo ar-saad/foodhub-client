@@ -4,7 +4,7 @@ import { useState, useImperativeHandle, forwardRef, useRef } from "react";
 import Image from "next/image";
 import { ImageIcon, X } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "./button";
+import { Button } from "../ui/button";
 
 interface ImageUploadProps {
   value?: string;
@@ -13,6 +13,7 @@ interface ImageUploadProps {
 
 export interface ImageUploadRef {
   uploadToCloudinary: () => Promise<string>;
+  hasFileSelected: () => boolean;
 }
 
 const ImageUpload = forwardRef<ImageUploadRef, ImageUploadProps>(
@@ -23,6 +24,7 @@ const ImageUpload = forwardRef<ImageUploadRef, ImageUploadProps>(
     const inputRef = useRef<HTMLInputElement>(null);
 
     useImperativeHandle(ref, () => ({
+      hasFileSelected: () => !!file,
       uploadToCloudinary: async () => {
         if (!file) {
           if (value) return value;

@@ -1,3 +1,5 @@
+"use client";
+
 import { Meal } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -11,6 +13,11 @@ import {
 import { PaginationControlsProps } from "@/types";
 import { SquarePen, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ConfirmationDialog from "@/components/common/ConfirmationDialog";
+import { deleteMeal } from "@/actions/meal.actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function MealListBlock({
   meals,
@@ -19,8 +26,20 @@ export default function MealListBlock({
   meals: Meal[];
   meta: PaginationControlsProps;
 }) {
-  console.log(meta);
+  const router = useRouter();
   const { limit: pageSize, page: currentPage, count, totalPages } = meta;
+
+  const handleDelete = async (id: string) => {
+    const toastId = toast.loading("Deleting meal.");
+    const res = await deleteMeal(id);
+    if (res.error) {
+      toast.error(res.error.message || "Something went wrong", { id: toastId });
+      return;
+    }
+
+    toast.success("Meal deleted successfully", { id: toastId });
+    router.refresh();
+  };
 
   return (
     <div className="border rounded-md p-1">
@@ -40,7 +59,7 @@ export default function MealListBlock({
           {meals.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={5}
+                colSpan={7}
                 className="text-center py-8 text-muted-foreground"
               >
                 No meals found
@@ -66,12 +85,17 @@ export default function MealListBlock({
                   </Badge>
                 </TableCell>
                 <TableCell className="flex items-center gap-1">
-                  <Button variant="ghost">
-                    <SquarePen />
-                  </Button>
-                  <Button variant="ghost">
-                    <Trash2 className="text-red-500" />
-                  </Button>
+                  <Link href={`/provider-dashboard/meals/${meal.id}/update`}>
+                    <Button variant="ghost">
+                      <SquarePen />
+                    </Button>
+                  </Link>
+                  <ConfirmationDialog
+                    title="Confirm"
+                    description="Are you sure you want to delete this meal?"
+                    actionFunction={() => handleDelete(meal.id)}
+                    trigger={<Trash2 className="text-red-500" />}
+                  />
                 </TableCell>
               </TableRow>
             ))
