@@ -11,7 +11,7 @@ export async function proxy(request: NextRequest) {
 
   if (data) {
     isAuthenticated = true;
-    userRole = data.user.role;
+    userRole = data?.user?.role;
   }
 
   //* User is not authenticated

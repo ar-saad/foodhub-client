@@ -24,7 +24,6 @@ const ImageUpload = forwardRef<ImageUploadRef, ImageUploadProps>(
 
     useImperativeHandle(ref, () => ({
       uploadToCloudinary: async () => {
-        console.log("UPLOAD API CALLED");
         if (!file) {
           if (value) return value;
           throw new Error("No image selected");
@@ -58,7 +57,7 @@ const ImageUpload = forwardRef<ImageUploadRef, ImageUploadProps>(
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const selectedFile = e.target.files?.[0];
-      console.log(selectedFile);
+
       if (!selectedFile) return;
 
       if (selectedFile.size > 5000000) {

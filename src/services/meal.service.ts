@@ -1,18 +1,14 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
-import { Category } from "@/types/category.type";
 
 const API_URL = env.API_URL;
 
-export const categoryService = {
-  getAll: async function (): Promise<{
-    data: Category[] | null;
-    error: { message: string } | null;
-  }> {
+export const mealService = {
+  getAll: async function () {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/categories`, {
+      const res = await fetch(`${API_URL}/meals`, {
         headers: {
           Cookie: cookieStore.toString(),
         },
@@ -22,37 +18,39 @@ export const categoryService = {
       if (!res.ok) {
         return {
           data: null,
-          error: { message: "Failed to fetch categories." },
+          error: { message: "Failed to fetch meals." },
         };
       }
 
       const categories = await res.json();
 
-      return { data: categories.data, error: null };
+      return { data: categories, error: null };
     } catch (error) {
       console.error(error);
       return { data: null, error: { message: "Something went wrong." } };
     }
   },
 
-  create: async function (categoryData: {
+  create: async function (payload: {
+    providerId: string;
+    categoryId: string;
     name: string;
-    emoji: string;
+    description: string;
+    price: number;
     image: string;
-  }): Promise<{
-    data: Category | null;
-    error: { message: string } | null;
-  }> {
+    isAvailable: boolean;
+    isFeatured: boolean;
+  }) {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/categories`, {
+      const res = await fetch(`${API_URL}/meals`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Cookie: cookieStore.toString(),
         },
-        body: JSON.stringify(categoryData),
+        body: JSON.stringify(payload),
         cache: "no-store",
       });
 

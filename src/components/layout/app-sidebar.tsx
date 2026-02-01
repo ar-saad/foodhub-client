@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { adminRoutes } from "@/routes/adminRoutes";
+import { providerRoutes } from "@/routes/providerRoutes";
 import { customerRoutes } from "@/routes/customerRoutes";
 import { Route } from "@/types";
 import { UserRoles } from "@/constants/userRoles";
@@ -30,6 +31,9 @@ export function AppSidebar({
   switch (user.role) {
     case UserRoles.admin:
       routes = adminRoutes;
+      break;
+    case UserRoles.provider:
+      routes = providerRoutes;
       break;
     case UserRoles.customer:
       routes = customerRoutes;

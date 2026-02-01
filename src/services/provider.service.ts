@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 
 const API_URL = env.API_URL;
 
-export const partnerService = {
+export const providerService = {
   createPartnerProfile: async function (profileData: {
     name: string;
     address: string;

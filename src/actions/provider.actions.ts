@@ -1,6 +1,6 @@
 "use server";
 
-import { partnerService } from "@/services/partner.service";
+import { providerService } from "@/services/provider.service";
 
 export async function createPartnerProfile(data: {
   name: string;
@@ -8,5 +8,5 @@ export async function createPartnerProfile(data: {
   description: string;
   logo: string;
 }) {
-  return await partnerService.createPartnerProfile(data);
+  return await providerService.createPartnerProfile(data);
 }

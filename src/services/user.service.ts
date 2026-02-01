@@ -2,6 +2,7 @@ import { env } from "@/env";
 import { cookies } from "next/headers";
 
 const AUTH_URL = env.AUTH_URL;
+const API_URL = env.API_URL;
 
 export const userService = {
   getSession: async function () {
@@ -22,6 +23,29 @@ export const userService = {
       }
 
       return { data: session, error: null };
+    } catch (error) {
+      console.error(error);
+      return { data: null, error: { message: "Something went wrong." } };
+    }
+  },
+  getCurrentUser: async function () {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/users/me`, {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+        cache: "no-store",
+      });
+
+      const user = await res.json();
+
+      if (!user) {
+        return { data: null, error: { message: "User not found." } };
+      }
+
+      return { data: user, error: null };
     } catch (error) {
       console.error(error);
       return { data: null, error: { message: "Something went wrong." } };
