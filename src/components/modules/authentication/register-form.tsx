@@ -54,7 +54,10 @@ export function RegisterForm({
           return;
         }
 
-        toast.success("User registration successful", { id: toastId });
+        toast.success(
+          "User registration successful. A email verification link has been sent to your email address. Please verify to continue.",
+          { id: toastId },
+        );
       } catch (error) {
         console.error(error);
 

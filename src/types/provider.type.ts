@@ -1,14 +1,8 @@
 export interface Provider {
   id: string;
+  userId: string;
   name: string;
-  rating: number;
-  deliveryTime: string;
-  priceRange: string;
-  coverImage: string;
+  address: string;
+  description: string;
   logo: string;
-  signatureDish: {
-    name: string;
-    image: string;
-    price: string;
-  };
 }

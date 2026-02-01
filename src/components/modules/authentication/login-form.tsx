@@ -24,6 +24,7 @@ import { env } from "@/env";
 import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
 import { toast } from "sonner";
+import { UserRoles } from "@/constants/userRoles";
 
 const formSchema = z.object({
   email: z.email().min(1, "This field is required"),
@@ -53,7 +54,18 @@ export function LoginForm({
         }
 
         toast.success("User login successful", { id: toastId });
-        window.location.href = "/";
+
+        // Redirect based on user role if available
+        if (data?.user) {
+          const userRole = (data.user as any).role;
+          if (userRole === UserRoles.customer) {
+            window.location.href = "/";
+          } else if (userRole === UserRoles.provider) {
+            window.location.href = "/provider-dashboard";
+          } else if (userRole === UserRoles.admin) {
+            window.location.href = "/admin-dashboard";
+          }
+        }
       } catch (error) {
         console.error(error);
 
