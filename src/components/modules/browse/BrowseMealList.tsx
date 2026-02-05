@@ -82,20 +82,19 @@ export default function BrowseMealListBlock({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {meals.map((meal) => (
           <Card
             key={meal.id}
-            className="overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            className="overflow-hidden hover:shadow-lg transition-shadow duration-300 gap-2"
           >
             <div className="relative h-48 w-full bg-gray-100">
               {meal.image ? (
                 <Image
                   src={meal.image}
                   alt={meal.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  height={300}
+                  width={500}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">

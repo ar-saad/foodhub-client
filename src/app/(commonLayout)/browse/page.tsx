@@ -9,7 +9,8 @@ import { getCategories } from "@/actions/category.actions";
 import { Meal } from "@/types/meal.type";
 import { Category } from "@/types/category.type";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function BrowseMealPage() {
   const router = useRouter();
@@ -119,6 +120,19 @@ export default function BrowseMealPage() {
     e.preventDefault();
     updateURL({ search: searchQuery });
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+        <Card className="w-full max-w-md">
+          <CardContent className="py-12 text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">Loading...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-5 my-5">
