@@ -2,6 +2,16 @@
 
 import { mealService } from "@/services/meal.service";
 
+export async function getMeals(params: {
+  search?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  categoryId?: string;
+  isFeatured?: string;
+}) {
+  return await mealService.getAll(params);
+}
+
 export async function createMeal(payload: {
   providerId: string;
   categoryId: string;

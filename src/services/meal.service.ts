@@ -4,11 +4,38 @@ import { cookies } from "next/headers";
 const API_URL = env.API_URL;
 
 export const mealService = {
-  getAll: async function () {
+  getAll: async function ({
+    search,
+    sortBy,
+    sortOrder,
+    categoryId,
+    isFeatured,
+  }: {
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
+    categoryId?: string;
+    isFeatured?: string;
+  }) {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/meals`, {
+      // Construct query parameters dynamically
+      const params = new URLSearchParams();
+
+      if (search) params.append("search", search);
+      if (sortBy && sortOrder) {
+        params.append("sortBy", sortBy);
+        params.append("sortOrder", sortOrder);
+      }
+      if (categoryId) params.append("categoryId", categoryId);
+      if (isFeatured) params.append("isFeatured", isFeatured);
+
+      // Build the final URL
+      const queryString = params.toString();
+      const url = `${API_URL}/meals${queryString ? `?${queryString}` : ""}`;
+
+      const res = await fetch(url, {
         headers: {
           Cookie: cookieStore.toString(),
         },
