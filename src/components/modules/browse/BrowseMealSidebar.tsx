@@ -38,7 +38,7 @@ export default function BrowseMealSidebarBlock({
   const hasActiveFilters = currentCategory || currentSort !== "name";
 
   return (
-    <aside className="w-full lg:w-72 flex-shrink-0">
+    <aside className="w-full lg:w-72 shrink-0">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
