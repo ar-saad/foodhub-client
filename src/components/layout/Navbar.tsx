@@ -26,6 +26,8 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
 import { UserRoles } from "@/constants/userRoles";
+import ProfileDropdownMenu from "./ProfileDropdownMenu";
+import { User } from "@/types/user.type";
 
 interface MenuItem {
   title: string;
@@ -55,9 +57,7 @@ interface NavbarProps {
       url: string;
     };
   };
-  user: {
-    role: string;
-  };
+  user: User;
 }
 
 const Navbar = ({
@@ -156,15 +156,14 @@ const Navbar = ({
           <div className="flex gap-2">
             {user ? (
               <>
-                {!user ||
-                  (user?.role === UserRoles.customer && (
-                    <Link href="/become-partner">
-                      <Button className="bg-orange-400 hover:bg-orange-500">
-                        Become a Partner
-                      </Button>
-                    </Link>
-                  ))}
-                <Button onClick={() => handleLogout()}>Logout</Button>
+                {user?.role === UserRoles.customer && (
+                  <Link href="/become-partner">
+                    <Button className="bg-orange-400 hover:bg-orange-500">
+                      Become a Partner
+                    </Button>
+                  </Link>
+                )}
+                <ProfileDropdownMenu user={user} />
               </>
             ) : (
               <>
@@ -228,15 +227,14 @@ const Navbar = ({
                   <div className="flex flex-col gap-3">
                     {user ? (
                       <>
-                        {!user ||
-                          (user?.role === UserRoles.customer && (
-                            <Button>Become a Partner</Button>
-                          ))}
-                        <Link href="/become-partner">
-                          <Button className="bg-orange-400 hover:bg-orange-500">
-                            Become a Partner
-                          </Button>
-                        </Link>
+                        {user?.role === UserRoles.customer && (
+                          <Link href="/become-partner">
+                            <Button className="bg-orange-400 hover:bg-orange-500">
+                              Become a Partner
+                            </Button>
+                          </Link>
+                        )}
+                        <ProfileDropdownMenu user={user} />
                       </>
                     ) : (
                       <>
