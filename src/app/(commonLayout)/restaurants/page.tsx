@@ -32,7 +32,7 @@ export default function RestaurantsListPage() {
   }, [searchQuery]);
 
   return (
-    <div className="container mx-auto px-5 py-12 space-y-6">
+    <div className="container max-w-7xl mx-auto px-5 py-12 space-y-6">
       <div className="space-y-2">
         <h1 className="text-3xl text-primary font-bold tracking-tight">
           Our Partners

@@ -10,6 +10,22 @@ interface BrowseByCravingProps {
   onCategoryClick?: (categoryId: string) => void;
 }
 
+const cravingPrefixes = [
+  "Craving",
+  "Want",
+  "Need",
+  "Love",
+  "Fancy",
+  "Try",
+  "Feel Like",
+  "In The Mood For",
+];
+
+function getCravingTitle(name: string, index: number) {
+  const prefix = cravingPrefixes[index % cravingPrefixes.length];
+  return `${prefix} ${name}?`;
+}
+
 export default function BrowseByCraving({
   categories = [],
   onCategoryClick,
@@ -25,7 +41,7 @@ export default function BrowseByCraving({
       className="w-full py-12 md:py-16 bg-background"
       aria-label="Browse by craving"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-8 md:mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-2">
@@ -38,7 +54,7 @@ export default function BrowseByCraving({
 
         {/* Category Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {categories.map((category) => (
+          {categories.map((category, index) => (
             <button
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
@@ -76,8 +92,9 @@ export default function BrowseByCraving({
               {/* Content Overlay */}
               <div className="relative h-full flex flex-col justify-end p-4 md:p-6">
                 {/* Category Title */}
+                <h3 className="text-5xl">{category.emoji}</h3>
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1 md:mb-2 drop-shadow-lg">
-                  {category.emoji} {category.name}
+                  {getCravingTitle(category.name, index)}
                 </h3>
 
                 {/* Browse Now Button - appears on hover */}

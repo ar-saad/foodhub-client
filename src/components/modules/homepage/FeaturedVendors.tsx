@@ -152,7 +152,7 @@ export default function FeaturedVendors() {
       className="w-full py-12 md:py-16 bg-background"
       aria-label="Featured vendors"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 container">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 container">
         {/* Section Header */}
         <div className="mb-8 md:mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-2 text-center md:text-left">

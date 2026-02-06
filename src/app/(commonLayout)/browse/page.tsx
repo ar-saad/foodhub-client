@@ -135,7 +135,7 @@ export default function BrowseMealPage() {
   }
 
   return (
-    <div className="container mx-auto px-5 my-5">
+    <div className="container max-w-7xl mx-auto px-5 my-5">
       {/* Search Bar */}
       <div className="mb-6 mt-2">
         <form onSubmit={handleSearchSubmit} className="relative">

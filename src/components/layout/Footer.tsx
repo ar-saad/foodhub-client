@@ -78,7 +78,7 @@ const Footer = ({
 }: Footer2Props) => {
   return (
     <section className={cn("pt-32 pb-12 px-16", className)}>
-      <div className="container mx-auto px-4">
+      <div className="container max-w-7xl mx-auto px-4">
         <footer>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="mb-8 lg:mb-0">

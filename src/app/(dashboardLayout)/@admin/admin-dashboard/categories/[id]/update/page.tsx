@@ -15,7 +15,7 @@ export default async function UpdateCategoryPage({
   }
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container max-w-7xl mx-auto py-8">
       <UpdateCategoryForm category={category} />
     </div>
   );
