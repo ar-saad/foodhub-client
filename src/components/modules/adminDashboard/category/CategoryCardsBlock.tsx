@@ -1,16 +1,37 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Category } from "@/types";
+import ConfirmationDialog from "@/components/common/ConfirmationDialog";
+import { deleteCategory } from "@/actions/category.actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function CategoryCardsBlock({
   categories,
 }: {
   categories: Category[];
 }) {
+  const router = useRouter();
+
+  const handleDelete = async (id: string) => {
+    const toastId = toast.loading("Deleting category...");
+    const res = await deleteCategory(id);
+    if (res.error) {
+      toast.error(res.error.message || "Something went wrong", {
+        id: toastId,
+      });
+      return;
+    }
+    toast.success("Category deleted successfully", { id: toastId });
+    router.refresh();
+  };
+
   if (!categories || categories.length === 0) {
     return (
       <Card>
@@ -69,6 +90,34 @@ export default function CategoryCardsBlock({
                   <span className="text-4xl">{category.emoji}</span>
                 </div>
               )}
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 mt-3">
+                <Link
+                  href={`/admin-dashboard/categories/${category.id}/update`}
+                  className="flex-1"
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-1.5"
+                  >
+                    <Pencil className="size-3.5" />
+                    Edit
+                  </Button>
+                </Link>
+                <ConfirmationDialog
+                  title="Delete Category"
+                  description={`Are you sure you want to delete "${category.name}"? This action cannot be undone.`}
+                  actionFunction={() => handleDelete(category.id)}
+                  trigger={
+                    <span className="flex items-center gap-1.5">
+                      <Trash2 className="size-3.5" />
+                      Delete
+                    </span>
+                  }
+                  variant="destructive"
+                />
+              </div>
             </CardContent>
           </Card>
         ))}

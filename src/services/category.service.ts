@@ -77,4 +77,114 @@ export const categoryService = {
       };
     }
   },
+
+  getById: async function (id: string): Promise<{
+    data: Category | null;
+    error: { message: string } | null;
+  }> {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/categories/${id}`, {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        return {
+          data: null,
+          error: { message: "Failed to fetch category." },
+        };
+      }
+
+      const result = await res.json();
+
+      return { data: result.data, error: null };
+    } catch (error) {
+      console.error(error);
+      return { data: null, error: { message: "Something went wrong." } };
+    }
+  },
+
+  update: async function (payload: {
+    id: string;
+    name: string;
+    emoji: string;
+    image: string;
+  }): Promise<{
+    data: Category | null;
+    error: { message: string } | null;
+  }> {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/categories/${payload.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(payload),
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        return {
+          data: null,
+          error: {
+            message: errorData?.message || "Failed to update category.",
+          },
+        };
+      }
+
+      const result = await res.json();
+
+      return { data: result.data, error: null };
+    } catch (error) {
+      console.error(error);
+      return {
+        data: null,
+        error: { message: "Something went wrong." },
+      };
+    }
+  },
+
+  delete: async function (id: string): Promise<{
+    data: Category | null;
+    error: { message: string } | null;
+  }> {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/categories/${id}`, {
+        method: "DELETE",
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        return {
+          data: null,
+          error: {
+            message: errorData?.message || "Failed to delete category.",
+          },
+        };
+      }
+
+      const result = await res.json();
+
+      return { data: result.data, error: null };
+    } catch (error) {
+      console.error(error);
+      return {
+        data: null,
+        error: { message: "Something went wrong." },
+      };
+    }
+  },
 };
