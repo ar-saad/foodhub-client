@@ -85,7 +85,7 @@ export default function BrowseMealListBlock({
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {meals.map((meal) => (
-          <MealCard meal={meal} />
+          <MealCard meal={meal} key={meal.id} />
         ))}
       </div>
     </div>

@@ -152,4 +152,37 @@ export const userService = {
       return { data: null, error: { message: "Something went wrong." } };
     }
   },
+
+  updateUserStatus: async function ({
+    userId,
+    status,
+  }: {
+    userId: string;
+    status: string;
+  }) {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/users/status/${userId}`, {
+        method: "PATCH",
+        headers: {
+          Cookie: cookieStore.toString(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+        cache: "no-store",
+      });
+
+      const user = await res.json();
+
+      if (!user) {
+        return { data: null, error: { message: "User not found." } };
+      }
+
+      return { data: user, error: null };
+    } catch (error) {
+      console.error(error);
+      return { data: null, error: { message: "Something went wrong." } };
+    }
+  },
 };

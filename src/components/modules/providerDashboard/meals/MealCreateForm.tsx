@@ -124,8 +124,6 @@ export default function MealCreateForm({
     },
   });
 
-  console.log(user);
-
   return (
     <div>
       <Card>

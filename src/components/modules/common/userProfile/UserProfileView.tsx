@@ -3,8 +3,10 @@ import { User } from "@/types/user.type";
 import { UserRoles } from "@/constants/userRoles";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Mail, Phone, CheckCircle2, XCircle } from "lucide-react";
+import { Mail, Phone, CheckCircle2, XCircle, SquarePen } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface UserProfileViewProps {
   userId?: string;
@@ -16,8 +18,6 @@ export default async function UserProfileViewPage({
   let user: User | null = null;
   let error: string | null = null;
 
-  console.log(userId);
-
   try {
     // Fetch user data based on whether userId is provided
     const result = userId ? await getUser(userId) : await getCurrentUser();
@@ -25,7 +25,6 @@ export default async function UserProfileViewPage({
     if (result.error || !result.data) {
       error = result.error?.message || "Failed to load user profile";
     } else {
-      console.log(result);
       user = result.data.data;
     }
   } catch (err) {
@@ -34,7 +33,7 @@ export default async function UserProfileViewPage({
 
   if (error || !user) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50 flex items-center justify-center p-6">
+      <div className="min-h-[calc(100vh-6rem)] bg-linear-to-br from-slate-50 via-white to-slate-50 flex items-center justify-center p-6">
         <Card className="p-8 border-red-200 bg-red-50/50 backdrop-blur-sm">
           <p className="text-red-700 font-medium">
             {error || "User profile not found"}
@@ -43,8 +42,6 @@ export default async function UserProfileViewPage({
       </div>
     );
   }
-
-  const isProvider = user.role === UserRoles.provider;
 
   const getRoleLabel = (role: string) => {
     switch (role) {
@@ -59,7 +56,7 @@ export default async function UserProfileViewPage({
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50 p-1">
+    <div className="min-h-[calc(100vh-6rem)] bg-linear-to-br from-slate-50 via-white to-slate-50">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Profile Header */}
         <Card className="p-8 shadow-lg border-slate-200/60 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-shadow duration-300">
@@ -108,6 +105,21 @@ export default async function UserProfileViewPage({
                       </>
                     )}
                   </Badge>
+                </div>
+                <div className="mt-3">
+                  <Link
+                    href={
+                      user.role === "ADMIN"
+                        ? "/admin-dashboard/profile/update"
+                        : user.role === "PROVIDER"
+                          ? "/provider-dashboard/profile/update"
+                          : "/dashboard/profile/update"
+                    }
+                  >
+                    <Button size="xs">
+                      Update <SquarePen />
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

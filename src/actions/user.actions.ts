@@ -33,3 +33,13 @@ export async function updateUserProfile({
 }) {
   return await userService.updateUserProfile({ userId, payload });
 }
+
+export async function updateUserStatus({
+  userId,
+  status,
+}: {
+  userId: string;
+  status: string;
+}) {
+  return await userService.updateUserStatus({ userId, status });
+}
