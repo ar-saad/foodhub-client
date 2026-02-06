@@ -1,0 +1,120 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { getUsers } from "@/actions/user.actions";
+import { User } from "@/types/user.type";
+import { PaginationControlsProps } from "@/types/pagination.type";
+import { Input } from "@/components/ui/input";
+import PaginationControls from "@/components/ui/pagination-controls";
+import UserListBlock from "@/components/modules/adminDashboard/users/UserListBlock";
+import { Loader2, Search } from "lucide-react";
+
+export default function AdminDashboardUserListPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [users, setUsers] = useState<User[]>([]);
+  const [meta, setMeta] = useState<PaginationControlsProps | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const searchParamValue = searchParams.get("search") || "";
+
+  // Update URL with new parameters
+  const updateURL = useCallback(
+    (updates: Record<string, string>) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value) {
+          params.set(key, value);
+        } else {
+          params.delete(key);
+        }
+      });
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [pathname, router, searchParams],
+  );
+
+  // Sync search input from URL
+  useEffect(() => {
+    setSearchQuery(searchParamValue);
+  }, [searchParamValue]);
+
+  // Debounced search — resets to page 1 on new search
+  useEffect(() => {
+    if (searchQuery === searchParamValue) return;
+
+    const timer = setTimeout(() => {
+      updateURL({ search: searchQuery, page: "" });
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, searchParamValue, updateURL]);
+
+  // Fetch users whenever URL params change
+  useEffect(() => {
+    async function loadUsers() {
+      setLoading(true);
+
+      try {
+        const result = await getUsers({
+          search: searchParams.get("search") || "",
+          page: searchParams.get("page") || "1",
+          limit: searchParams.get("limit") || "10",
+          sortBy: searchParams.get("sortBy") || "name",
+          sortOrder: searchParams.get("sortOrder") || "asc",
+        });
+
+        if (result.error) {
+          setUsers([]);
+          setMeta(null);
+        } else {
+          setUsers(result.data?.data.result ?? []);
+          setMeta(result.data?.data?.meta ?? null);
+        }
+      } catch {
+        setUsers([]);
+        setMeta(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUsers();
+  }, [searchParams]);
+
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl font-bold">User List</h1>
+
+      {/* Search Input */}
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        <Input
+          type="text"
+          placeholder="Search by name or phone..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9"
+        />
+      </div>
+
+      {/* Table */}
+      {loading ? (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <UserListBlock users={users} meta={meta} />
+      )}
+
+      {/* Pagination */}
+      {meta && meta.totalPages > 1 && <PaginationControls meta={meta} />}
+    </div>
+  );
+}

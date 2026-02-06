@@ -3,15 +3,7 @@ import { User } from "@/types/user.type";
 import { UserRoles } from "@/constants/userRoles";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Building2,
-  FileText,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react";
+import { Mail, Phone, CheckCircle2, XCircle } from "lucide-react";
 import Image from "next/image";
 
 interface UserProfileViewProps {
@@ -24,6 +16,8 @@ export default async function UserProfileViewPage({
   let user: User | null = null;
   let error: string | null = null;
 
+  console.log(userId);
+
   try {
     // Fetch user data based on whether userId is provided
     const result = userId ? await getUser(userId) : await getCurrentUser();
@@ -31,6 +25,7 @@ export default async function UserProfileViewPage({
     if (result.error || !result.data) {
       error = result.error?.message || "Failed to load user profile";
     } else {
+      console.log(result);
       user = result.data.data;
     }
   } catch (err) {

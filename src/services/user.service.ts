@@ -53,11 +53,26 @@ export const userService = {
     }
   },
 
-  getUsers: async function () {
+  getUsers: async function (params: {
+    search: string;
+    page: string;
+    limit: string;
+    sortBy: string;
+    sortOrder: string;
+  }) {
     try {
       const cookieStore = await cookies();
+      const url = new URL(`${API_URL}/users`);
 
-      const res = await fetch(`${API_URL}/users`, {
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== "") {
+            url.searchParams.append(key, value);
+          }
+        });
+      }
+
+      const res = await fetch(url.toString(), {
         headers: {
           Cookie: cookieStore.toString(),
         },

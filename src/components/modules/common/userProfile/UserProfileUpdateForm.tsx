@@ -29,7 +29,7 @@ import Image from "next/image";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  phone: z.string().optional(),
+  phone: z.string(),
 });
 
 export default function UserProfileUpdateForm({ user }: { user: User }) {
@@ -79,7 +79,7 @@ export default function UserProfileUpdateForm({ user }: { user: User }) {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-2xl mx-auto">
         <Card>
           <CardHeader>
