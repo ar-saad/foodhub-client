@@ -33,7 +33,7 @@ export default function RestaurantsListBlock({
       <div>
         <p className="text-sm text-muted-foreground">
           Found {providers.length}{" "}
-          {providers.length === 1 ? "provider" : "providers"}
+          {providers.length === 1 ? "partner" : "partners"}
         </p>
       </div>
 

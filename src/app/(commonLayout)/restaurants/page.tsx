@@ -4,20 +4,24 @@ import RestaurantListBlock from "@/components/modules/restaurants/RestaurantsLis
 import { getAllProviders } from "@/actions/provider.actions";
 import { useEffect, useState } from "react";
 import { Provider } from "@/types";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import CommonPagesLoading from "../loading";
 
 export default function RestaurantsListPage() {
-  const [loading, setLoading] = useState<Boolean>(true);
-  const [providers, setProviders] = useState<Provider[]>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [providers, setProviders] = useState<Provider[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const fetchProviders = async () => {
-      const result = await getAllProviders(searchQuery);
+    setLoading(true);
 
-      setProviders(result.data.data || []);
+    const fetchProviders = async () => {
+      try {
+        const result = await getAllProviders(searchQuery);
+        setProviders(result.data.data || []);
+      } finally {
+        setLoading(false);
+      }
     };
 
     const debounceTimer = setTimeout(() => {
@@ -37,19 +41,25 @@ export default function RestaurantsListPage() {
           Discover restaurants and food partners near you
         </p>
       </div>
-      <div className="border border-primary rounded-lg flex items-center">
-        <Search className="h-5 w-5 text-primary ml-2" />
-        <Input
-          placeholder="Search restaurants or partners by name..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="ml-10"
-        />
+      <div className="mb-6 mt-2">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <Input
+            type="text"
+            placeholder="Search for restaurants..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 pr-4 py-6 text-lg"
+          />
+        </div>
       </div>
-      <RestaurantListBlock
-        providers={providers || []}
-        searchQuery={searchQuery}
-      />
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        </div>
+      ) : (
+        <RestaurantListBlock providers={providers} searchQuery={searchQuery} />
+      )}
     </div>
   );
 }
