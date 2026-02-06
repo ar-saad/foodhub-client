@@ -5,25 +5,10 @@ import { MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-interface CuisineOption {
-  id: string;
-  emoji: string;
-  label: string;
-}
-
-const cuisineOptions: CuisineOption[] = [
-  { id: "pizza", emoji: "🍕", label: "Pizza" },
-  { id: "burgers", emoji: "🍔", label: "Burgers" },
-  { id: "asian", emoji: "🍜", label: "Asian" },
-  { id: "mexican", emoji: "🌮", label: "Mexican" },
-  { id: "italian", emoji: "🍝", label: "Italian" },
-  { id: "japanese", emoji: "🍱", label: "Japanese" },
-  { id: "healthy", emoji: "🥗", label: "Healthy" },
-  { id: "desserts", emoji: "🍰", label: "Desserts" },
-];
+import { Category } from "@/types/category.type";
 
 interface HeroProps {
+  categories?: Category[];
   restaurantCount?: number;
   onAddressSearch?: (address: string) => void;
   onCuisineSelect?: (cuisineId: string) => void;
@@ -31,6 +16,7 @@ interface HeroProps {
 }
 
 export default function Hero({
+  categories = [],
   restaurantCount = 2847,
   onAddressSearch,
   onCuisineSelect,
@@ -69,7 +55,10 @@ export default function Hero({
           <div className="relative flex flex-col sm:flex-row gap-3 items-stretch sm:items-center bg-white rounded-xl shadow-lg border border-gray-100 p-2 sm:p-3 focus-within:shadow-xl focus-within:border-primary/20 transition-all duration-200">
             {/* Location Icon */}
             <div className="flex items-center justify-center sm:justify-start px-3 sm:px-4 text-muted-foreground">
-              <MapPin className="size-5 sm:size-6 text-primary" aria-hidden="true" />
+              <MapPin
+                className="size-5 sm:size-6 text-primary"
+                aria-hidden="true"
+              />
             </div>
 
             {/* Input Field */}
@@ -98,24 +87,24 @@ export default function Hero({
         <div className="mb-6">
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
             <div className="flex gap-2 sm:gap-3 min-w-max sm:min-w-0 sm:flex-wrap">
-              {cuisineOptions.map((cuisine) => (
+              {categories.map((category) => (
                 <button
-                  key={cuisine.id}
-                  onClick={() => handleCuisineClick(cuisine.id)}
+                  key={category.id}
+                  onClick={() => handleCuisineClick(category.id)}
                   className={cn(
                     "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200",
                     "bg-pink-50 hover:bg-[#e21b70] hover:text-white border border-pink-100 hover:border-[#e21b70]",
-                    selectedCuisine === cuisine.id &&
+                    selectedCuisine === category.id &&
                       "bg-[#e21b70] text-white border-[#e21b70]",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e21b70] focus-visible:ring-offset-2"
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e21b70] focus-visible:ring-offset-2",
                   )}
-                  aria-label={`Filter by ${cuisine.label} cuisine`}
-                  aria-pressed={selectedCuisine === cuisine.id}
+                  aria-label={`Filter by ${category.name} cuisine`}
+                  aria-pressed={selectedCuisine === category.id}
                 >
                   <span className="text-base" aria-hidden="true">
-                    {cuisine.emoji}
+                    {category.emoji}
                   </span>
-                  <span>{cuisine.label}</span>
+                  <span>{category.name}</span>
                 </button>
               ))}
             </div>

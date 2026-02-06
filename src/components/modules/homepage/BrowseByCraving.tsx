@@ -3,87 +3,15 @@
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
-
-interface Category {
-  id: string;
-  title: string;
-  imageUrl: string;
-  restaurantCount: number;
-  alt: string;
-}
-
-const categories: Category[] = [
-  {
-    id: "pizza",
-    title: "Craving Pizza?",
-    imageUrl:
-      "https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    restaurantCount: 127,
-    alt: "Delicious pizza with cheese and toppings",
-  },
-  {
-    id: "sushi",
-    title: "Need Sushi?",
-    imageUrl:
-      "https://images.unsplash.com/photo-1611143669185-af224c5e3252?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    restaurantCount: 89,
-    alt: "Fresh sushi rolls and sashimi",
-  },
-  {
-    id: "burgers",
-    title: "Want Burgers?",
-    imageUrl:
-      "https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    restaurantCount: 156,
-    alt: "Juicy burger with fries",
-  },
-  {
-    id: "desserts",
-    title: "Sweet Desserts?",
-    imageUrl:
-      "https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&w=1078&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    restaurantCount: 94,
-    alt: "Delicious desserts and sweets",
-  },
-  {
-    id: "salads",
-    title: "Fresh Salads?",
-    imageUrl:
-      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    restaurantCount: 72,
-    alt: "Fresh and healthy salads",
-  },
-  {
-    id: "pasta",
-    title: "Love Pasta?",
-    imageUrl:
-      "https://images.unsplash.com/photo-1598866594230-a7c12756260f?q=80&w=2016&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    restaurantCount: 103,
-    alt: "Italian pasta dishes",
-  },
-  {
-    id: "tacos",
-    title: "Taco Time?",
-    imageUrl:
-      "https://images.unsplash.com/photo-1700625916627-16ad4fb0553c?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    restaurantCount: 118,
-    alt: "Mexican tacos with toppings",
-  },
-  {
-    id: "asian",
-    title: "Asian Cuisine?",
-    imageUrl:
-      "https://images.unsplash.com/photo-1631100732613-6b65da9a343d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    restaurantCount: 145,
-    alt: "Asian cuisine dishes",
-  },
-];
+import { Category } from "@/types/category.type";
 
 interface BrowseByCravingProps {
+  categories?: Category[];
   onCategoryClick?: (categoryId: string) => void;
 }
 
 export default function BrowseByCraving({
+  categories = [],
   onCategoryClick,
 }: BrowseByCravingProps) {
   const handleCategoryClick = (categoryId: string) => {
@@ -97,7 +25,7 @@ export default function BrowseByCraving({
       className="w-full py-12 md:py-16 bg-background"
       aria-label="Browse by craving"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-8 md:mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-2">
@@ -124,13 +52,13 @@ export default function BrowseByCraving({
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                 "cursor-pointer",
               )}
-              aria-label={`Browse ${category.title} - ${category.restaurantCount} restaurants`}
+              aria-label={`Browse ${category.name}`}
             >
               {/* Background Image */}
               <div className="absolute inset-0">
                 <Image
-                  src={category.imageUrl}
-                  alt={category.alt}
+                  src={category.image}
+                  alt={category.name}
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-110"
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -149,13 +77,8 @@ export default function BrowseByCraving({
               <div className="relative h-full flex flex-col justify-end p-4 md:p-6">
                 {/* Category Title */}
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1 md:mb-2 drop-shadow-lg">
-                  {category.title}
+                  {category.emoji} {category.name}
                 </h3>
-
-                {/* Restaurant Count */}
-                <p className="text-sm md:text-base text-white/90 mb-3 md:mb-4 drop-shadow-md">
-                  {category.restaurantCount} restaurants
-                </p>
 
                 {/* Browse Now Button - appears on hover */}
                 <div

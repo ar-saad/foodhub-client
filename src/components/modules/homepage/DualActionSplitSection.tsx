@@ -42,7 +42,7 @@ export default function DualActionSplitSection({
       className="w-full py-16 md:py-20 bg-background"
       aria-label="Explore options"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 container">
         {/* Optional Section Heading */}
         <div className="mb-12 md:mb-16 text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-2">
