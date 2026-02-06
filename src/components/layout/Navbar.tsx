@@ -74,8 +74,8 @@ const Navbar = ({
       url: "/browse",
     },
     {
-      title: "About",
-      url: "/about",
+      title: "Restaurants",
+      url: "/restaurants",
     },
     {
       title: "Contact",

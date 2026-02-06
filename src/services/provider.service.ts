@@ -4,7 +4,64 @@ import { cookies } from "next/headers";
 const API_URL = env.API_URL;
 
 export const providerService = {
-  createPartnerProfile: async function (profileData: {
+  getAll: async function (search: string) {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(
+        `${API_URL}/provider-profiles${search ? `?search=${search}` : ""}`,
+        {
+          headers: {
+            Cookie: cookieStore.toString(),
+          },
+          cache: "no-store",
+        },
+      );
+
+      if (!res.ok) {
+        return {
+          data: null,
+          error: { message: "Failed to fetch meals." },
+        };
+      }
+
+      const categories = await res.json();
+
+      return { data: categories, error: null };
+    } catch (error) {
+      console.error(error);
+      return { data: null, error: { message: "Something went wrong." } };
+    }
+  },
+
+  getById: async function (id: string) {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/provider-profiles/${id}`, {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        return {
+          data: null,
+          error: { message: "Failed to retrieve provider profile." },
+        };
+      }
+
+      const categories = await res.json();
+
+      return { data: categories, error: null };
+    } catch (error) {
+      console.error(error);
+      return { data: null, error: { message: "Something went wrong." } };
+    }
+  },
+
+  create: async function (profileData: {
     name: string;
     address: string;
     description: string;

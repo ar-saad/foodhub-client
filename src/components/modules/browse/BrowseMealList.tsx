@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, ShoppingCart, Star, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import MealCard from "./MealCard";
 
 interface BrowseMealListProps {
   meals: Meal[];
@@ -84,72 +85,7 @@ export default function BrowseMealListBlock({
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {meals.map((meal) => (
-          <Card
-            key={meal.id}
-            className="overflow-hidden hover:shadow-lg transition-shadow duration-300 gap-2"
-          >
-            <div className="relative h-48 w-full bg-gray-100">
-              {meal.image ? (
-                <Image
-                  src={meal.image}
-                  alt={meal.name}
-                  height={300}
-                  width={500}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <UtensilsCrossed className="h-12 w-12 text-gray-300" />
-                </div>
-              )}
-              {meal.isFeatured && (
-                <Badge className="absolute top-2 right-2" variant="default">
-                  <Star className="h-3 w-3 mr-1" />
-                  Featured
-                </Badge>
-              )}
-              {!meal.isAvailable && (
-                <Badge className="absolute top-2 left-2" variant="destructive">
-                  Unavailable
-                </Badge>
-              )}
-            </div>
-
-            <CardContent className="p-4">
-              <div className="space-y-2">
-                <div className="flex items-start justify-between">
-                  <h3 className="font-semibold text-lg line-clamp-1">
-                    {meal.name}
-                  </h3>
-                </div>
-
-                {meal.category && (
-                  <Badge variant="outline" className="text-xs">
-                    {meal.category.emoji} {meal.category.name}
-                  </Badge>
-                )}
-
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {meal.description}
-                </p>
-
-                {meal.providerProfile && (
-                  <p className="text-xs text-muted-foreground">
-                    by {meal.providerProfile.name}
-                  </p>
-                )}
-              </div>
-            </CardContent>
-
-            <CardFooter className="p-4 pt-0 flex items-center justify-between">
-              <div className="text-2xl font-bold text-primary">
-                ${Number(meal.price).toFixed(2)}
-              </div>
-              <Button size="sm" disabled={!meal.isAvailable} className="gap-2">
-                <ShoppingCart className="h-4 w-4" />
-                Add to Cart
-              </Button>
-            </CardFooter>
-          </Card>
+          <MealCard meal={meal} />
         ))}
       </div>
     </div>
