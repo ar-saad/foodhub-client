@@ -1,27 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { Category, Provider } from "@/types";
 
 interface DualActionSplitSectionProps {
+  categories?: Category[];
+  providers?: Provider[];
   onCuisineClick?: () => void;
   onRestaurantClick?: () => void;
 }
 
-const cuisineFlags = [
-  "🇮🇹", // Italian
-  "🇨🇳", // Chinese
-  "🇮🇳", // Indian
-  "🇯🇵", // Japanese
-  "🇲🇽", // Mexican
-  "🇹🇭", // Thai
-  "🇫🇷", // French
-  "🇰🇷", // Korean
-];
+const fallbackEmojis = ["🍕", "🍜", "🍛", "🍣", "🌮", "🍲", "🥐", "🍱", "🥗"];
 
 export default function DualActionSplitSection({
+  categories = [],
+  providers = [],
   onCuisineClick,
   onRestaurantClick,
 }: DualActionSplitSectionProps) {
@@ -74,15 +71,18 @@ export default function DualActionSplitSection({
             }}
             aria-label="Browse restaurants by cuisine type"
           >
-            {/* Flag Grid */}
+            {/* Category Emoji Grid */}
             <div className="grid grid-cols-3 gap-3 mb-8">
-              {cuisineFlags.map((flag, index) => (
+              {(categories.length > 0
+                ? categories.slice(0, 9).map((cat) => cat.emoji)
+                : fallbackEmojis
+              ).map((emoji, index) => (
                 <div
                   key={index}
                   className="text-4xl md:text-5xl flex items-center justify-center"
                   aria-hidden="true"
                 >
-                  {flag}
+                  {emoji}
                 </div>
               ))}
             </div>
@@ -143,24 +143,51 @@ export default function DualActionSplitSection({
           >
             {/* Restaurant Logos Grid */}
             <div className="grid grid-cols-3 gap-3 md:gap-4 mb-8">
-              {Array.from({ length: 9 }).map((_, index) => (
-                <div
-                  key={index}
-                  className={cn(
-                    "w-14 h-14 md:w-16 md:h-16",
-                    "rounded-full",
-                    "bg-linear-to-br from-pink-100 to-pink-200",
-                    "shadow-md",
-                    "flex items-center justify-center",
-                    "border-2 border-white",
-                    "relative overflow-hidden",
-                  )}
-                  aria-hidden="true"
-                >
-                  {/* Restaurant icon placeholder */}
-                  <UtensilsCrossed className="w-6 h-6 md:w-8 md:h-8 text-pink-600" />
-                </div>
-              ))}
+              {providers.length > 0
+                ? providers.slice(0, 9).map((provider) => (
+                    <div
+                      key={provider.id}
+                      className={cn(
+                        "w-14 h-14 md:w-16 md:h-16",
+                        "rounded-full",
+                        "bg-linear-to-br from-pink-100 to-pink-200",
+                        "shadow-md",
+                        "flex items-center justify-center",
+                        "border-2 border-white",
+                        "relative overflow-hidden",
+                      )}
+                      aria-hidden="true"
+                    >
+                      {provider.logo ? (
+                        <Image
+                          src={provider.logo}
+                          alt={provider.name}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      ) : (
+                        <UtensilsCrossed className="w-6 h-6 md:w-8 md:h-8 text-pink-600" />
+                      )}
+                    </div>
+                  ))
+                : Array.from({ length: 9 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className={cn(
+                        "w-14 h-14 md:w-16 md:h-16",
+                        "rounded-full",
+                        "bg-linear-to-br from-pink-100 to-pink-200",
+                        "shadow-md",
+                        "flex items-center justify-center",
+                        "border-2 border-white",
+                        "relative overflow-hidden",
+                      )}
+                      aria-hidden="true"
+                    >
+                      <UtensilsCrossed className="w-6 h-6 md:w-8 md:h-8 text-pink-600" />
+                    </div>
+                  ))}
             </div>
 
             {/* Heading */}

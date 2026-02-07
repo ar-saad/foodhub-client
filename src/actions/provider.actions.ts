@@ -2,7 +2,7 @@
 
 import { providerService } from "@/services/provider.service";
 
-export async function getAllProviders(search: string) {
+export async function getAllProviders(search?: string) {
   return await providerService.getAll(search);
 }
 

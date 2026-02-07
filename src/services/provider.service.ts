@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 const API_URL = env.API_URL;
 
 export const providerService = {
-  getAll: async function (search: string) {
+  getAll: async function (search?: string) {
     try {
       const cookieStore = await cookies();
 

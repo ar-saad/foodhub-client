@@ -26,6 +26,7 @@ import ImageUpload, {
 import { useRef } from "react";
 import { createPartnerProfile } from "@/actions/provider.actions";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/contexts/UserContext";
 
 const formSchema = z.object({
   name: z.string().min(1, "Restaurant or company name is required"),
@@ -36,6 +37,7 @@ const formSchema = z.object({
 export default function BecomePartnerForm() {
   const imageUploadRef = useRef<ImageUploadRef>(null);
   const router = useRouter();
+  const { refetchUser } = useUser();
 
   const form = useForm({
     defaultValues: {
@@ -47,7 +49,7 @@ export default function BecomePartnerForm() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      const toastId = toast.loading("Submitting partner application...");
+      const toastId = toast.loading("Creating partner profile...");
       try {
         // Upload logo first
         const logoUrl = await imageUploadRef.current?.uploadToCloudinary();
@@ -78,6 +80,7 @@ export default function BecomePartnerForm() {
         }
 
         toast.success("Partner profile created successfully!", { id: toastId });
+        await refetchUser();
 
         router.push("/provider-dashboard");
       } catch (error) {
@@ -213,9 +216,7 @@ export default function BecomePartnerForm() {
 
               <Field>
                 <Button type="submit" disabled={form.state.isSubmitting}>
-                  {form.state.isSubmitting
-                    ? "Submitting..."
-                    : "Submit Application"}
+                  {form.state.isSubmitting ? "Submitting..." : "Submit"}
                 </Button>
               </Field>
             </FieldGroup>
