@@ -9,12 +9,14 @@ export const mealService = {
     sortBy,
     sortOrder,
     categoryId,
+    providerId,
     isFeatured,
   }: {
     search?: string;
     sortBy?: string;
     sortOrder?: string;
     categoryId?: string;
+    providerId?: string;
     isFeatured?: string;
   }) {
     try {
@@ -29,6 +31,7 @@ export const mealService = {
         params.append("sortOrder", sortOrder);
       }
       if (categoryId) params.append("categoryId", categoryId);
+      if (providerId) params.append("providerId", providerId);
       if (isFeatured) params.append("isFeatured", isFeatured);
 
       // Build the final URL

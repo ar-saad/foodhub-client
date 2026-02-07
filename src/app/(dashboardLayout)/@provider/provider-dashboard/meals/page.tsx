@@ -1,11 +1,16 @@
 import MealListBlock from "@/components/modules/providerDashboard/meals/MealListBlock";
 import { Button } from "@/components/ui/button";
 import { mealService } from "@/services/meal.service";
+import { userService } from "@/services/user.service";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
 export default async function MealsPage() {
-  const { data, error } = await mealService.getAll({});
+  const { data: userData } = await userService.getCurrentUser();
+
+  const { data, error } = await mealService.getAll({
+    providerId: userData?.data?.providerProfile?.id,
+  });
 
   return (
     <div>
