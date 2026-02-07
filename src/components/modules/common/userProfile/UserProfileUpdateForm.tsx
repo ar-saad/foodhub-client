@@ -160,7 +160,16 @@ export default function UserProfileUpdateForm() {
                   <FieldLabel>Profile Picture (Optional)</FieldLabel>
                   <ImageUpload ref={imageUploadRef} folder="foodhub/users" />
                   {user?.image && (
-                    <Image src={user.image} alt="User profile" fill />
+                    <div>
+                      <FieldLabel>Current Picture</FieldLabel>
+                      <Image
+                        src={user.image}
+                        alt="User profile"
+                        width={320}
+                        height={320}
+                        className="rounded-md object-cover"
+                      />
+                    </div>
                   )}
                 </Field>
 

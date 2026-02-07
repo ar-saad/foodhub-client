@@ -41,7 +41,6 @@ interface NavbarProps {
   className?: string;
   logo?: {
     url: string;
-    src: string;
     alt: string;
     title: string;
     className?: string;
@@ -62,7 +61,6 @@ interface NavbarProps {
 const Navbar = ({
   logo = {
     url: "/",
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
     alt: "logo",
     title: "FoodHub",
   },
@@ -75,10 +73,6 @@ const Navbar = ({
     {
       title: "Restaurants",
       url: "/restaurants",
-    },
-    {
-      title: "Contact",
-      url: "/contact",
     },
     {
       title: "Dashboard",
