@@ -64,7 +64,7 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
           <div className="flex items-center gap-1 text-sm">
             <span className="font-semibold">{provider.meals.length}</span>
             <span className="text-muted-foreground">
-              {provider.meals.length === 1 ? "meal" : "meals"}
+              {provider.meals.length === 1 ? "featured meal" : "featured meals"}
             </span>
           </div>
         )}

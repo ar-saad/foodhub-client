@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowRight, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,6 @@ import type { Category, Provider } from "@/types";
 interface DualActionSplitSectionProps {
   categories?: Category[];
   providers?: Provider[];
-  onCuisineClick?: () => void;
-  onRestaurantClick?: () => void;
 }
 
 const fallbackEmojis = ["🍕", "🍜", "🍛", "🍣", "🌮", "🍲", "🥐", "🍱", "🥗"];
@@ -19,27 +18,14 @@ const fallbackEmojis = ["🍕", "🍜", "🍛", "🍣", "🌮", "🍲", "🥐", 
 export default function DualActionSplitSection({
   categories = [],
   providers = [],
-  onCuisineClick,
-  onRestaurantClick,
 }: DualActionSplitSectionProps) {
-  const handleCuisineClick = () => {
-    if (onCuisineClick) {
-      onCuisineClick();
-    }
-  };
-
-  const handleRestaurantClick = () => {
-    if (onRestaurantClick) {
-      onRestaurantClick();
-    }
-  };
-
+  const router = useRouter();
   return (
     <section
       className="w-full py-16 md:py-20 bg-background"
       aria-label="Explore options"
     >
-      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 container">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Optional Section Heading */}
         <div className="mb-12 md:mb-16 text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-2">
@@ -50,12 +36,17 @@ export default function DualActionSplitSection({
         {/* Two Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* LEFT COLUMN - Browse by Cuisine */}
-          <Link
-            href="/cuisines"
-            onClick={handleCuisineClick}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => router.push("/browse")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") router.push("/browse");
+            }}
             className={cn(
               "group relative overflow-hidden rounded-2xl",
               "h-70 md:h-100",
+              "border-2 border-pink-100",
               "p-8 md:p-12",
               "shadow-md hover:shadow-2xl",
               "transition-all duration-300 ease-out",
@@ -64,27 +55,45 @@ export default function DualActionSplitSection({
               "cursor-pointer",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4",
               "focus-visible:ring-offset-background",
+              "hover:border-pink-200",
             )}
             style={{
-              background:
-                "linear-gradient(135deg, oklch(0.97 0.02 353), oklch(0.95 0.03 353))",
+              backgroundColor: "oklch(0.98 0.01 353)",
             }}
             aria-label="Browse restaurants by cuisine type"
           >
             {/* Category Emoji Grid */}
             <div className="grid grid-cols-3 gap-3 mb-8">
-              {(categories.length > 0
-                ? categories.slice(0, 9).map((cat) => cat.emoji)
-                : fallbackEmojis
-              ).map((emoji, index) => (
-                <div
-                  key={index}
-                  className="text-4xl md:text-5xl flex items-center justify-center"
-                  aria-hidden="true"
-                >
-                  {emoji}
-                </div>
-              ))}
+              {categories.length > 0
+                ? categories.slice(0, 9).map((cat) => (
+                    <Link
+                      key={cat.id}
+                      href={`/browse?category=${cat.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className={cn(
+                        "w-14 h-14 md:w-16 md:h-16 text-4xl",
+                        "rounded-full",
+                        "bg-linear-to-br from-pink-100 to-pink-200",
+                        "shadow-md",
+                        "flex items-center justify-center",
+                        "border-2 border-white",
+                        "relative overflow-hidden",
+                        "hover:ring-2 hover:ring-pink-400 transition-all duration-200",
+                      )}
+                      aria-label={`Browse ${cat.name}`}
+                    >
+                      {cat.emoji}
+                    </Link>
+                  ))
+                : fallbackEmojis.map((emoji, index) => (
+                    <div
+                      key={index}
+                      className="text-4xl md:text-5xl flex items-center justify-center p-2"
+                      aria-hidden="true"
+                    >
+                      {emoji}
+                    </div>
+                  ))}
             </div>
 
             {/* Heading */}
@@ -107,21 +116,23 @@ export default function DualActionSplitSection({
                 "group-hover:shadow-xl",
               )}
               size="lg"
-              onClick={(e) => {
-                e.preventDefault();
-                handleCuisineClick();
-              }}
+              tabIndex={-1}
               aria-label="Explore cuisines"
             >
               Explore Cuisines
               <ArrowRight className="ml-2 size-4" aria-hidden="true" />
             </Button>
-          </Link>
+          </div>
 
           {/* RIGHT COLUMN - Browse by Restaurant */}
-          <Link
-            href="/restaurants"
-            onClick={handleRestaurantClick}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => router.push("/restaurants")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ")
+                router.push("/restaurants");
+            }}
             className={cn(
               "group relative overflow-hidden rounded-2xl",
               "h-70 md:h-100",
@@ -145,8 +156,10 @@ export default function DualActionSplitSection({
             <div className="grid grid-cols-3 gap-3 md:gap-4 mb-8">
               {providers.length > 0
                 ? providers.slice(0, 9).map((provider) => (
-                    <div
+                    <Link
                       key={provider.id}
+                      href={`/restaurants/${provider.id}`}
+                      onClick={(e) => e.stopPropagation()}
                       className={cn(
                         "w-14 h-14 md:w-16 md:h-16",
                         "rounded-full",
@@ -155,8 +168,9 @@ export default function DualActionSplitSection({
                         "flex items-center justify-center",
                         "border-2 border-white",
                         "relative overflow-hidden",
+                        "hover:ring-2 hover:ring-pink-400 transition-all duration-200",
                       )}
-                      aria-hidden="true"
+                      aria-label={`View ${provider.name}`}
                     >
                       {provider.logo ? (
                         <Image
@@ -169,7 +183,7 @@ export default function DualActionSplitSection({
                       ) : (
                         <UtensilsCrossed className="w-6 h-6 md:w-8 md:h-8 text-pink-600" />
                       )}
-                    </div>
+                    </Link>
                   ))
                 : Array.from({ length: 9 }).map((_, index) => (
                     <div
@@ -210,16 +224,13 @@ export default function DualActionSplitSection({
                 "group-hover:shadow-xl",
               )}
               size="lg"
-              onClick={(e) => {
-                e.preventDefault();
-                handleRestaurantClick();
-              }}
+              tabIndex={-1}
               aria-label="View all restaurants"
             >
               All Restaurants
               <ArrowRight className="ml-2 size-4" aria-hidden="true" />
             </Button>
-          </Link>
+          </div>
         </div>
       </div>
     </section>

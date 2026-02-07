@@ -116,6 +116,10 @@ export default function BrowseMealPage() {
     updateURL({ sort, order });
   };
 
+  const handleClearFilters = () => {
+    router.replace(pathname);
+  };
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateURL({ search: searchQuery });
@@ -159,6 +163,7 @@ export default function BrowseMealPage() {
           currentOrder={currentOrder}
           onCategoryChange={handleCategoryChange}
           onSortChange={handleSortChange}
+          onClearFilters={handleClearFilters}
         />
         <BrowseMealListBlock meals={meals} loading={loading} error={error} />
       </div>

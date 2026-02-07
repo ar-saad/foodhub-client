@@ -20,6 +20,7 @@ interface BrowseMealSidebarProps {
   currentOrder: string;
   onCategoryChange: (categoryId: string) => void;
   onSortChange: (sort: string, order: string) => void;
+  onClearFilters: () => void;
 }
 
 export default function BrowseMealSidebarBlock({
@@ -29,12 +30,8 @@ export default function BrowseMealSidebarBlock({
   currentOrder,
   onCategoryChange,
   onSortChange,
+  onClearFilters,
 }: BrowseMealSidebarProps) {
-  const handleClearFilters = () => {
-    onCategoryChange("");
-    onSortChange("name", "asc");
-  };
-
   const hasActiveFilters = currentCategory || currentSort !== "name";
 
   return (
@@ -50,7 +47,7 @@ export default function BrowseMealSidebarBlock({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={handleClearFilters}
+                onClick={onClearFilters}
                 className="h-8 px-2"
               >
                 <X className="h-4 w-4 mr-1" />

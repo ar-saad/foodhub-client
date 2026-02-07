@@ -25,7 +25,7 @@ export default async function HomePage() {
 
   return (
     <div>
-      <Hero categories={heroCategories} />
+      <Hero categories={heroCategories} restaurantCount={allProviders.length} />
       <BrowseByCraving categories={cravingCategories} />
       <FeaturedVendors providers={featuredProviders} />
       <DualActionSplitSection

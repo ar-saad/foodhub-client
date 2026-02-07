@@ -1,49 +1,19 @@
-"use client";
-
-import { useState } from "react";
+import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import { Category } from "@/types/category.type";
 
 interface HeroProps {
   categories?: Category[];
   restaurantCount?: number;
-  onAddressSearch?: (address: string) => void;
-  onCuisineSelect?: (cuisineId: string) => void;
-  onBrowseAll?: () => void;
 }
 
 export default function Hero({
   categories = [],
-  restaurantCount = 2847,
-  onAddressSearch,
-  onCuisineSelect,
-  onBrowseAll,
+  restaurantCount = 0,
 }: HeroProps) {
-  const [address, setAddress] = useState("");
-  const [selectedCuisine, setSelectedCuisine] = useState<string | null>(null);
-
-  const handleSearch = () => {
-    if (address.trim() && onAddressSearch) {
-      onAddressSearch(address.trim());
-    }
-  };
-
-  const handleCuisineClick = (cuisineId: string) => {
-    setSelectedCuisine(selectedCuisine === cuisineId ? null : cuisineId);
-    if (onCuisineSelect) {
-      onCuisineSelect(cuisineId);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
-
   return (
     <section
       className="w-full py-12 md:py-16 lg:py-20"
@@ -65,20 +35,16 @@ export default function Hero({
             <Input
               type="text"
               placeholder="Enter your delivery address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              onKeyDown={handleKeyDown}
               className="flex-1 border-0 shadow-none focus-visible:ring-0 text-base sm:text-lg h-auto py-2 sm:py-3 px-0"
               aria-label="Delivery address input"
             />
 
             {/* Find Food Button */}
             <Button
-              onClick={handleSearch}
+              asChild
               className="w-full sm:w-auto bg-[#e21b70] hover:bg-[#c1185f] text-white font-semibold px-6 sm:px-8 py-2 sm:py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
-              aria-label="Find food at this address"
             >
-              Find Food
+              <Link href="/browse">Find Food</Link>
             </Button>
           </div>
         </div>
@@ -88,24 +54,19 @@ export default function Hero({
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
             <div className="flex gap-2 sm:gap-3 min-w-max sm:min-w-0 sm:flex-wrap">
               {categories.map((category) => (
-                <button
+                <Badge
                   key={category.id}
-                  onClick={() => handleCuisineClick(category.id)}
-                  className={cn(
-                    "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200",
-                    "bg-pink-50 hover:bg-[#e21b70] hover:text-white border border-pink-100 hover:border-[#e21b70]",
-                    selectedCuisine === category.id &&
-                      "bg-[#e21b70] text-white border-[#e21b70]",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e21b70] focus-visible:ring-offset-2",
-                  )}
-                  aria-label={`Filter by ${category.name} cuisine`}
-                  aria-pressed={selectedCuisine === category.id}
+                  asChild
+                  variant="outline"
+                  className="cursor-pointer gap-2 px-4 py-2 text-sm font-medium bg-pink-50 hover:bg-[#e21b70] hover:text-white border-pink-100 hover:border-[#e21b70] transition-all duration-200"
                 >
-                  <span className="text-base" aria-hidden="true">
-                    {category.emoji}
-                  </span>
-                  <span>{category.name}</span>
-                </button>
+                  <Link href={`/browse?category=${category.id}`}>
+                    <span className="text-base" aria-hidden="true">
+                      {category.emoji}
+                    </span>
+                    <span>{category.name}</span>
+                  </Link>
+                </Badge>
               ))}
             </div>
           </div>
@@ -124,12 +85,11 @@ export default function Hero({
         {/* Secondary CTA Button */}
         <div className="text-center">
           <Button
-            onClick={onBrowseAll}
+            asChild
             variant="outline"
             className="border-2 border-[#e21b70] text-[#e21b70] bg-transparent hover:bg-[#e21b70] hover:text-white font-semibold px-6 sm:px-8 py-2 sm:py-3 rounded-lg transition-all duration-200"
-            aria-label="Browse all restaurants"
           >
-            Browse All Restaurants
+            <Link href="/restaurants">Browse All Restaurants</Link>
           </Button>
         </div>
       </div>
