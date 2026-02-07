@@ -25,6 +25,7 @@ import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
 import { toast } from "sonner";
 import { UserRoles } from "@/constants/userRoles";
+import { useUser } from "@/contexts/UserContext";
 
 const formSchema = z.object({
   email: z.email().min(1, "This field is required"),
@@ -35,6 +36,8 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const { refetchUser } = useUser();
+
   const form = useForm({
     defaultValues: {
       email: "",
@@ -54,6 +57,8 @@ export function LoginForm({
         }
 
         toast.success("User login successful", { id: toastId });
+
+        await refetchUser();
 
         // Redirect based on user role if available
         if (data?.user) {

@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 
 import {
@@ -20,9 +22,13 @@ import { UserRoles } from "@/constants/userRoles";
 import logo from "../../../public/logo.webp";
 import Image from "next/image";
 import { IdCard } from "lucide-react";
-import { User } from "@/types/user.type";
+import { useUser } from "@/contexts/UserContext";
 
-export function AppSidebar({ user, ...props }: { user: User }) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useUser();
+
+  if (!user) return null;
+
   let routes: Route[] = [];
 
   switch (user.role) {

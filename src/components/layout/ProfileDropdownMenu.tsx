@@ -11,13 +11,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserRoles } from "@/constants/userRoles";
 import { authClient } from "@/lib/auth-client";
-import { User } from "@/types/user.type";
+import { useUser } from "@/contexts/UserContext";
 import { User as UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 
-export default function ProfileDropdownMenu({ user }: { user: User }) {
+export default function ProfileDropdownMenu() {
+  const { user, setUser } = useUser();
+
   const handleLogout = async () => {
     const toastId = toast.loading("User logout processing");
     try {
@@ -28,6 +30,7 @@ export default function ProfileDropdownMenu({ user }: { user: User }) {
         return;
       }
 
+      setUser(null);
       window.location.href = "/";
     } catch (error) {
       console.error(error);
@@ -35,6 +38,8 @@ export default function ProfileDropdownMenu({ user }: { user: User }) {
       toast.error("Something went wrong, please try again", { id: toastId });
     }
   };
+
+  if (!user) return null;
 
   return (
     <DropdownMenu>

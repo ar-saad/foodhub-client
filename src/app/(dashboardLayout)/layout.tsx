@@ -37,7 +37,7 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar user={userInfo} />
+      <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 justify-between items-center gap-2 border-b px-4">
           <div className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -48,7 +48,7 @@ export default async function DashboardLayout({
             />
             <DynamicBreadcrumb />
           </div>
-          <ProfileDropdownMenu user={userInfo} />
+          <ProfileDropdownMenu />
         </header>
 
         <div className="flex flex-1 flex-col gap-4 p-4">{content}</div>

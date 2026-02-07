@@ -34,8 +34,8 @@ import {
 } from "@/components/ui/select";
 import { Category } from "@/types";
 import { createMeal } from "@/actions/meal.actions";
-import { User } from "@/types/user.type";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/contexts/UserContext";
 
 const formSchema = z.object({
   name: z
@@ -57,11 +57,10 @@ const formSchema = z.object({
 
 export default function MealCreateForm({
   categories,
-  user,
 }: {
   categories: Category[];
-  user: User;
 }) {
+  const { user } = useUser();
   const imageUploadRef = useRef<ImageUploadRef>(null);
   const router = useRouter();
 

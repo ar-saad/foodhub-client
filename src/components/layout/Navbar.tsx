@@ -27,7 +27,7 @@ import { toast } from "sonner";
 import { redirect } from "next/navigation";
 import { UserRoles } from "@/constants/userRoles";
 import ProfileDropdownMenu from "./ProfileDropdownMenu";
-import { User } from "@/types/user.type";
+import { useUser } from "@/contexts/UserContext";
 
 interface MenuItem {
   title: string;
@@ -57,7 +57,6 @@ interface NavbarProps {
       url: string;
     };
   };
-  user: User;
 }
 
 const Navbar = ({
@@ -90,9 +89,9 @@ const Navbar = ({
     login: { title: "Login", url: "/login" },
     signup: { title: "Register", url: "/register" },
   },
-  user,
   className,
 }: NavbarProps) => {
+  const { user, setUser } = useUser();
   const dashboardUrl = (() => {
     const role = (user as { role?: string } | null)?.role;
     switch (role) {
@@ -121,6 +120,7 @@ const Navbar = ({
         return;
       }
 
+      setUser(null);
       window.location.href = "/";
     } catch (error) {
       console.error(error);
@@ -163,7 +163,7 @@ const Navbar = ({
                     </Button>
                   </Link>
                 )}
-                <ProfileDropdownMenu user={user} />
+                <ProfileDropdownMenu />
               </>
             ) : (
               <>
@@ -234,7 +234,7 @@ const Navbar = ({
                             </Button>
                           </Link>
                         )}
-                        <ProfileDropdownMenu user={user} />
+                        <ProfileDropdownMenu />
                       </>
                     ) : (
                       <>

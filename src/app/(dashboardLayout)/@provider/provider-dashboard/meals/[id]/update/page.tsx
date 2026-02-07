@@ -1,7 +1,6 @@
 import MealUpdateForm from "@/components/modules/providerDashboard/meals/MealUpdateForm";
 import { categoryService } from "@/services/category.service";
 import { mealService } from "@/services/meal.service";
-import { userService } from "@/services/user.service";
 
 export default async function UpdateMealPage({
   params,
@@ -12,19 +11,10 @@ export default async function UpdateMealPage({
 
   const getMeal = mealService.getById(id);
   const getCategories = categoryService.getAll();
-  const getUser = userService.getCurrentUser();
 
-  const [meal, categories, user] = await Promise.all([
-    getMeal,
-    getCategories,
-    getUser,
-  ]);
+  const [meal, categories] = await Promise.all([getMeal, getCategories]);
 
   return (
-    <MealUpdateForm
-      meal={meal.data.data}
-      categories={categories.data ?? []}
-      user={user.data.data}
-    />
+    <MealUpdateForm meal={meal.data.data} categories={categories.data ?? []} />
   );
 }

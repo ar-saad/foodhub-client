@@ -26,20 +26,22 @@ import ImageUpload, {
 } from "@/components/common/image-upload-input";
 import { useRef } from "react";
 import Image from "next/image";
+import { useUser } from "@/contexts/UserContext";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string(),
 });
 
-export default function UserProfileUpdateForm({ user }: { user: User }) {
+export default function UserProfileUpdateForm() {
+  const { user, refetchUser } = useUser();
   const router = useRouter();
   const imageUploadRef = useRef<ImageUploadRef>(null);
 
   const form = useForm({
     defaultValues: {
-      name: user.name || "",
-      phone: user.phone || "",
+      name: user?.name || "",
+      phone: user?.phone || "",
     },
     validators: {
       onSubmit: formSchema,
@@ -48,13 +50,13 @@ export default function UserProfileUpdateForm({ user }: { user: User }) {
       const toastId = toast.loading("Updating profile...");
       try {
         // Upload image if new one selected
-        let imageUrl = user.image;
+        let imageUrl = user?.image;
         if (imageUploadRef.current?.hasFileSelected()) {
           imageUrl = await imageUploadRef.current.uploadToCloudinary();
         }
 
         const { data, error } = await updateUserProfile({
-          userId: user.id,
+          userId: user?.id || "",
           payload: {
             name: value.name,
             phone: value.phone || "",
@@ -70,6 +72,7 @@ export default function UserProfileUpdateForm({ user }: { user: User }) {
         }
 
         toast.success("Profile updated successfully!", { id: toastId });
+        await refetchUser();
         router.push("/dashboard/profile");
       } catch (error) {
         console.error(error);
@@ -156,7 +159,7 @@ export default function UserProfileUpdateForm({ user }: { user: User }) {
                 <Field>
                   <FieldLabel>Profile Picture (Optional)</FieldLabel>
                   <ImageUpload ref={imageUploadRef} folder="foodhub/users" />
-                  {user.image && (
+                  {user?.image && (
                     <Image src={user.image} alt="User profile" fill />
                   )}
                 </Field>
@@ -166,7 +169,7 @@ export default function UserProfileUpdateForm({ user }: { user: User }) {
                   <FieldLabel>Email</FieldLabel>
                   <Input
                     type="email"
-                    value={user.email}
+                    value={user?.email || ""}
                     disabled
                     className="bg-slate-100 cursor-not-allowed"
                   />

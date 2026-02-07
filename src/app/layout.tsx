@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { UserProvider } from "@/contexts/UserContext";
 
 // Google Font - Poppins
 const poppins = Poppins({
@@ -26,8 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} antialiased`}>
-        {children}
-        <Toaster richColors />
+        <UserProvider>
+          {children}
+          <Toaster richColors />
+        </UserProvider>
       </body>
     </html>
   );
