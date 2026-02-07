@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 
 export default async function MealsPage() {
-  const { data, error } = await mealService.getAll();
+  const { data, error } = await mealService.getAll({});
 
   return (
     <div>

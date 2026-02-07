@@ -101,4 +101,49 @@ export const providerService = {
       };
     }
   },
+
+  update: async function (
+    id: string,
+    profileData: {
+      name?: string;
+      address?: string;
+      description?: string;
+      logo?: string;
+      isOpen?: boolean;
+    },
+  ) {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/provider-profiles/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(profileData),
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        return {
+          data: null,
+          error: {
+            message: errorData.message || "Failed to update provider profile",
+          },
+        };
+      }
+
+      const result = await res.json();
+
+      return { data: result, error: null };
+    } catch (error) {
+      console.error(error);
+      return {
+        data: null,
+        error: { message: "Something went wrong" },
+      };
+    }
+  },
 };

@@ -18,3 +18,16 @@ export async function createPartnerProfile(data: {
 }) {
   return await providerService.create(data);
 }
+
+export async function updateProviderProfile(
+  id: string,
+  data: {
+    name?: string;
+    address?: string;
+    description?: string;
+    logo?: string;
+    isOpen?: boolean;
+  },
+) {
+  return await providerService.update(id, data);
+}

@@ -19,8 +19,8 @@ export default async function DashboardLayout({
   provider: React.ReactNode;
   customer: React.ReactNode;
 }) {
-  const { data } = await userService.getSession();
-  const userInfo = data.user;
+  const { data } = await userService.getCurrentUser();
+  const userInfo = data.data;
 
   // Validate role exists
   if (!userInfo?.role || !Object.values(UserRoles).includes(userInfo.role)) {

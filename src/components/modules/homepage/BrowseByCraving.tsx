@@ -92,7 +92,7 @@ export default function BrowseByCraving({
               {/* Content Overlay */}
               <div className="relative h-full flex flex-col justify-end p-4 md:p-6">
                 {/* Category Title */}
-                <h3 className="text-5xl">{category.emoji}</h3>
+                <h3 className="text-5xl mb-3">{category.emoji}</h3>
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-1 md:mb-2 drop-shadow-lg">
                   {getCravingTitle(category.name, index)}
                 </h3>

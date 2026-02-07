@@ -19,13 +19,10 @@ import { Route } from "@/types";
 import { UserRoles } from "@/constants/userRoles";
 import logo from "../../../public/logo.webp";
 import Image from "next/image";
+import { IdCard } from "lucide-react";
+import { User } from "@/types/user.type";
 
-export function AppSidebar({
-  user,
-  ...props
-}: {
-  user: { role: string } & React.ComponentProps<typeof Sidebar>;
-}) {
+export function AppSidebar({ user, ...props }: { user: User }) {
   let routes: Route[] = [];
 
   switch (user.role) {
@@ -33,7 +30,21 @@ export function AppSidebar({
       routes = adminRoutes;
       break;
     case UserRoles.provider:
-      routes = providerRoutes;
+      routes = providerRoutes.map((group, index) =>
+        index === 0
+          ? {
+              ...group,
+              items: [
+                ...group.items,
+                {
+                  title: "Restaurant Profile",
+                  url: `/provider-dashboard/provider-profile/${user.providerProfile?.id}`,
+                  icon: IdCard,
+                },
+              ],
+            }
+          : group,
+      );
       break;
     case UserRoles.customer:
       routes = customerRoutes;

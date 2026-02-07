@@ -1,15 +1,20 @@
 import { Route } from "@/types";
-import { Hamburger, Home, ShoppingCart } from "lucide-react";
+import { Hamburger, Home, IdCard, ShoppingCart } from "lucide-react";
 
 export const providerRoutes: Route[] = [
   {
-    title: "Meal Management",
+    title: "Profile Management",
     items: [
       {
         title: "Home",
         url: "/provider-dashboard",
         icon: Home,
       },
+    ],
+  },
+  {
+    title: "Meal Management",
+    items: [
       {
         title: "Meals",
         url: "/provider-dashboard/meals",
