@@ -31,6 +31,7 @@ import { useUser } from "@/contexts/UserContext";
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string(),
+  address: z.string(),
 });
 
 export default function UserProfileUpdateForm() {
@@ -42,6 +43,7 @@ export default function UserProfileUpdateForm() {
     defaultValues: {
       name: user?.name || "",
       phone: user?.phone || "",
+      address: user?.address || "",
     },
     validators: {
       onSubmit: formSchema,
@@ -60,6 +62,7 @@ export default function UserProfileUpdateForm() {
           payload: {
             name: value.name,
             phone: value.phone || "",
+            address: value.address || "",
             image: imageUrl || "",
           },
         });
@@ -144,6 +147,34 @@ export default function UserProfileUpdateForm() {
                           type="tel"
                           aria-invalid={isInvalid}
                           placeholder="+1 (555) 123-4567"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    );
+                  }}
+                />
+
+                {/* Address Field */}
+                <form.Field
+                  name="address"
+                  children={(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+                    return (
+                      <Field data-invalid={isInvalid}>
+                        <FieldLabel htmlFor={field.name}>
+                          Address (Optional)
+                        </FieldLabel>
+                        <Input
+                          id={field.name}
+                          name={field.name}
+                          type="text"
+                          aria-invalid={isInvalid}
+                          placeholder="123 Main St, City, Country"
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
                         />

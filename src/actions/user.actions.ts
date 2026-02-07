@@ -28,6 +28,7 @@ export async function updateUserProfile({
   payload: {
     name: string;
     phone: string;
+    address: string;
     image: string;
   };
 }) {

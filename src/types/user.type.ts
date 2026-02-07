@@ -8,6 +8,7 @@ export interface User {
   image?: string;
   role: string;
   phone?: string;
+  address?: string;
   status: string;
   providerProfile?: Provider;
 }

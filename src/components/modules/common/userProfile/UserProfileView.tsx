@@ -3,7 +3,14 @@ import { User } from "@/types/user.type";
 import { UserRoles } from "@/constants/userRoles";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Mail, Phone, CheckCircle2, XCircle, SquarePen } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  CheckCircle2,
+  XCircle,
+  SquarePen,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -159,6 +166,21 @@ export default async function UserProfileViewPage({
                     Phone
                   </p>
                   <p className="text-slate-900 font-medium">{user.phone}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Address */}
+            {user.address && (
+              <div className="flex items-start gap-4 p-3 rounded-lg hover:bg-slate-50/50 transition-colors duration-200">
+                <div className="p-2 bg-linear-to-br from-amber-50 to-amber-100 rounded-lg">
+                  <MapPin className="w-5 h-5 text-amber-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">
+                    Address
+                  </p>
+                  <p className="text-slate-900 font-medium">{user.address}</p>
                 </div>
               </div>
             )}
