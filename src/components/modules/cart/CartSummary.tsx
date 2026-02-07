@@ -1,11 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
 export default function CartSummary() {
-  const { totalItems, totalPrice, clearCart } = useCart();
+  const router = useRouter();
+  const { totalItems, totalPrice, clearCart, setIsCartOpen } = useCart();
 
   return (
     <div className="space-y-3 pt-2">
@@ -21,7 +23,14 @@ export default function CartSummary() {
         </div>
       </div>
 
-      <Button className="w-full" size="lg">
+      <Button
+        className="w-full"
+        size="lg"
+        onClick={() => {
+          setIsCartOpen(false);
+          router.push("/checkout");
+        }}
+      >
         Proceed to Checkout
       </Button>
 
