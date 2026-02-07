@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { UserProvider } from "@/contexts/UserContext";
+import { CartProvider } from "@/contexts/CartContext";
 
 // Google Font - Poppins
 const poppins = Poppins({
@@ -28,8 +29,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} antialiased`}>
         <UserProvider>
-          {children}
-          <Toaster richColors />
+          <CartProvider>
+            {children}
+            <Toaster richColors />
+          </CartProvider>
         </UserProvider>
       </body>
     </html>

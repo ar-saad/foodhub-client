@@ -1,8 +1,10 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useCart } from "@/contexts/CartContext";
+import CartSheet from "@/components/modules/cart/CartSheet";
 
 import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -86,6 +88,7 @@ const Navbar = ({
   className,
 }: NavbarProps) => {
   const { user, setUser } = useUser();
+  const { totalItems, setIsCartOpen } = useCart();
   const dashboardUrl = (() => {
     const role = (user as { role?: string } | null)?.role;
     switch (role) {
@@ -147,7 +150,21 @@ const Navbar = ({
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            {/* Cart Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              onClick={() => setIsCartOpen(true)}
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems > 99 ? "99+" : totalItems}
+                </span>
+              )}
+            </Button>
             {user ? (
               <>
                 {user?.role === UserRoles.customer && (
@@ -189,72 +206,93 @@ const Navbar = ({
                 alt={logo.alt}
               />
             </a>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>
-                    <a href={logo.url} className="flex items-center gap-2">
-                      <Image
-                        src={navLogo}
-                        className="max-h-8 w-fit dark:invert"
-                        alt={logo.alt}
-                      />
-                    </a>
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 p-4">
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="flex w-full flex-col gap-4"
-                  >
-                    {menuWithDashboard.map((item) =>
-                      renderMobileMenuItem(item),
-                    )}
-                  </Accordion>
+            <div className="flex items-center gap-2">
+              {/* Mobile Cart Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative"
+                onClick={() => setIsCartOpen(true)}
+              >
+                <ShoppingCart className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems > 99 ? "99+" : totalItems}
+                  </span>
+                )}
+              </Button>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="size-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="overflow-y-auto">
+                  <SheetHeader>
+                    <SheetTitle>
+                      <a href={logo.url} className="flex items-center gap-2">
+                        <Image
+                          src={navLogo}
+                          className="max-h-8 w-fit dark:invert"
+                          alt={logo.alt}
+                        />
+                      </a>
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col gap-6 p-4">
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="flex w-full flex-col gap-4"
+                    >
+                      {menuWithDashboard.map((item) =>
+                        renderMobileMenuItem(item),
+                      )}
+                    </Accordion>
 
-                  <div className="flex flex-col gap-3">
-                    {user ? (
-                      <>
-                        {user?.role === UserRoles.customer && (
+                    <div className="flex flex-col gap-3">
+                      {user ? (
+                        <>
+                          {user?.role === UserRoles.customer && (
+                            <Link href="/become-partner">
+                              <Button className="bg-orange-400 hover:bg-orange-500">
+                                Become a Partner
+                              </Button>
+                            </Link>
+                          )}
+                          <ProfileDropdownMenu />
+                        </>
+                      ) : (
+                        <>
                           <Link href="/become-partner">
                             <Button className="bg-orange-400 hover:bg-orange-500">
                               Become a Partner
                             </Button>
                           </Link>
-                        )}
-                        <ProfileDropdownMenu />
-                      </>
-                    ) : (
-                      <>
-                        <Link href="/become-partner">
-                          <Button className="bg-orange-400 hover:bg-orange-500">
-                            Become a Partner
-                          </Button>
-                        </Link>
 
-                        <Button asChild variant="outline" size="sm">
-                          <Link href={auth.login.url}>{auth.login.title}</Link>
-                        </Button>
-                        <Button asChild size="sm">
-                          <Link href={auth.signup.url}>
-                            {auth.signup.title}
-                          </Link>
-                        </Button>
-                      </>
-                    )}
+                          <Button asChild variant="outline" size="sm">
+                            <Link href={auth.login.url}>
+                              {auth.login.title}
+                            </Link>
+                          </Button>
+                          <Button asChild size="sm">
+                            <Link href={auth.signup.url}>
+                              {auth.signup.title}
+                            </Link>
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Cart Sheet */}
+      <CartSheet />
     </section>
   );
 };

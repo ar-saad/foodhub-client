@@ -1,11 +1,21 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { useCart } from "@/contexts/CartContext";
 import { Meal } from "@/types";
 import { ShoppingCart, Star, UtensilsCrossed } from "lucide-react";
 import Image from "next/image";
 
 export default function MealCard({ meal }: { meal: Meal }) {
+  const { addItem } = useCart();
+
+  const handleAddToCart = () => {
+    if (!meal.providerId || !meal.providerProfile) return;
+    addItem(meal, meal.providerId, meal.providerProfile.name);
+  };
+
   return (
     <Card
       key={meal.id}
@@ -65,7 +75,12 @@ export default function MealCard({ meal }: { meal: Meal }) {
         <div className="text-2xl font-bold text-primary">
           ৳{Number(meal.price).toFixed(2)}
         </div>
-        <Button size="sm" disabled={!meal.isAvailable} className="gap-2">
+        <Button
+          size="sm"
+          disabled={!meal.isAvailable}
+          className="gap-2"
+          onClick={handleAddToCart}
+        >
           <ShoppingCart className="h-4 w-4" />
           Add to Cart
         </Button>

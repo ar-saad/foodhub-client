@@ -10,6 +10,7 @@ export default function RestaurantPublicProfile({
 }: {
   provider: Provider;
 }) {
+  console.log(provider);
   return (
     <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
       <div className="relative overflow-hidden rounded-2xl border-slate-200/60 shadow-xl">
