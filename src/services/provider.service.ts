@@ -6,15 +6,10 @@ const API_URL = env.API_URL;
 export const providerService = {
   getAll: async function (search?: string) {
     try {
-      const cookieStore = await cookies();
-
       const res = await fetch(
         `${API_URL}/provider-profiles${search ? `?search=${search}` : ""}`,
         {
-          headers: {
-            Cookie: cookieStore.toString(),
-          },
-          cache: "no-store",
+          next: { revalidate: 60 },
         },
       );
 

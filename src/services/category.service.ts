@@ -10,13 +10,8 @@ export const categoryService = {
     error: { message: string } | null;
   }> {
     try {
-      const cookieStore = await cookies();
-
       const res = await fetch(`${API_URL}/categories`, {
-        headers: {
-          Cookie: cookieStore.toString(),
-        },
-        cache: "no-store",
+        next: { revalidate: 60 },
       });
 
       if (!res.ok) {
