@@ -1,9 +1,9 @@
 import { Route } from "@/types";
-import { Home, FilePlus, ScrollText } from "lucide-react";
+import { Home, ShoppingCart, UserStar } from "lucide-react";
 
 export const customerRoutes: Route[] = [
   {
-    title: "Blog Management",
+    title: "General Management",
     items: [
       {
         title: "Home",
@@ -11,14 +11,14 @@ export const customerRoutes: Route[] = [
         icon: Home,
       },
       {
-        title: "Create Blog",
-        url: "/dashboard/create-blog",
-        icon: FilePlus,
+        title: "Orders",
+        url: "/dashboard/orders",
+        icon: ShoppingCart,
       },
       {
-        title: "Blog History",
-        url: "/dashboard/blogs",
-        icon: ScrollText,
+        title: "Reviews",
+        url: "/dashboard/reviews",
+        icon: UserStar,
       },
     ],
   },

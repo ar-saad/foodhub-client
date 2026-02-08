@@ -25,15 +25,37 @@ export interface CreateOrderPayload {
   paymentType: PaymentType;
 }
 
+export interface PopulatedOrderItem {
+  mealId: string;
+  quantity: number;
+  price: number;
+  meal?: {
+    id: string;
+    name: string;
+    image: string;
+  };
+}
+
 export interface Order {
   id: string;
   customerId: string;
   providerId: string;
-  orderItems: OrderItem[];
+  orderItems: PopulatedOrderItem[];
   totalAmount: string;
   address: string;
   paymentType: PaymentType;
   status: OrderStatus;
   createdAt?: string;
   updatedAt?: string;
+  customer?: {
+    id: string;
+    name: string;
+    email: string;
+    phone?: string;
+  };
+  providerProfile?: {
+    id: string;
+    name: string;
+    logo?: string;
+  };
 }
