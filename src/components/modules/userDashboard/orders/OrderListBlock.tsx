@@ -40,6 +40,7 @@ const statusVariantMap: Record<
   [OrderStatus.PLACED]: "outline",
   [OrderStatus.PREPARING]: "secondary",
   [OrderStatus.READY]: "default",
+  [OrderStatus.OUT_FOR_DELIVERY]: "default",
   [OrderStatus.DELIVERED]: "default",
   [OrderStatus.CANCELLED]: "destructive",
 };
@@ -48,6 +49,8 @@ const statusColorMap: Record<OrderStatus, string> = {
   [OrderStatus.PLACED]: "border-blue-400 text-blue-600",
   [OrderStatus.PREPARING]: "border-yellow-400 text-yellow-600",
   [OrderStatus.READY]: "bg-emerald-100 border-emerald-400 text-emerald-700",
+  [OrderStatus.OUT_FOR_DELIVERY]:
+    "bg-orange-100 border-orange-400 text-orange-700",
   [OrderStatus.DELIVERED]: "bg-green-600 text-white",
   [OrderStatus.CANCELLED]: "",
 };
@@ -65,6 +68,10 @@ function formatDate(dateStr?: string) {
 
 function formatCurrency(amount: string | number) {
   return `৳${Number(amount).toFixed(2)}`;
+}
+
+function formatStatus(status: string) {
+  return status.replace(/_/g, " ");
 }
 
 export default function OrderListBlock({
@@ -168,7 +175,7 @@ export default function OrderListBlock({
                     variant={statusVariantMap[order.status]}
                     className={statusColorMap[order.status]}
                   >
-                    {order.status}
+                    {formatStatus(order.status)}
                   </Badge>
                 </TableCell>
 

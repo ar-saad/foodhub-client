@@ -60,6 +60,7 @@ const statusVariantMap: Record<
   [OrderStatus.PLACED]: "outline",
   [OrderStatus.PREPARING]: "secondary",
   [OrderStatus.READY]: "default",
+  [OrderStatus.OUT_FOR_DELIVERY]: "default",
   [OrderStatus.DELIVERED]: "default",
   [OrderStatus.CANCELLED]: "destructive",
 };
@@ -68,6 +69,8 @@ const statusColorMap: Record<OrderStatus, string> = {
   [OrderStatus.PLACED]: "border-blue-400 text-blue-600",
   [OrderStatus.PREPARING]: "border-yellow-400 text-yellow-600",
   [OrderStatus.READY]: "bg-emerald-100 border-emerald-400 text-emerald-700",
+  [OrderStatus.OUT_FOR_DELIVERY]:
+    "bg-orange-100 border-orange-400 text-orange-700",
   [OrderStatus.DELIVERED]: "bg-green-600 text-white",
   [OrderStatus.CANCELLED]: "",
 };
@@ -76,6 +79,7 @@ const statusSteps: OrderStatus[] = [
   OrderStatus.PLACED,
   OrderStatus.PREPARING,
   OrderStatus.READY,
+  OrderStatus.OUT_FOR_DELIVERY,
   OrderStatus.DELIVERED,
 ];
 
@@ -92,6 +96,10 @@ function formatDate(dateStr?: string) {
 
 function formatCurrency(amount: string | number) {
   return `৳${Number(amount).toFixed(2)}`;
+}
+
+function formatStatus(status: string) {
+  return status.replace(/_/g, " ");
 }
 
 function getStepIndex(status: OrderStatus) {
@@ -151,7 +159,9 @@ export default function OrderDetailBlock({
       if (result.error) {
         toast.error(result.error.message, { id: toastId });
       } else {
-        toast.success(`Order status updated to ${newStatus}`, { id: toastId });
+        toast.success(`Order status updated to ${formatStatus(newStatus)}`, {
+          id: toastId,
+        });
         setOrder((prev) => (prev ? { ...prev, status: newStatus } : prev));
       }
     } catch {
@@ -212,7 +222,7 @@ export default function OrderDetailBlock({
             variant={statusVariantMap[order.status]}
             className={`${statusColorMap[order.status]} text-sm px-3 py-1`}
           >
-            {order.status}
+            {formatStatus(order.status)}
           </Badge>
 
           {/* Customer cancel button */}
@@ -234,10 +244,11 @@ export default function OrderDetailBlock({
           {/* Provider status update dropdown */}
           {role === "PROVIDER" && providerNextStatuses.length > 0 && (
             <Select
+              key={order.status}
               disabled={updating}
               onValueChange={(val) => handleStatusUpdate(val as OrderStatus)}
             >
-              <SelectTrigger className="w-auto">
+              <SelectTrigger className="w-auto border-primary text-primary font-medium ring-1 ring-primary/20">
                 <SelectValue placeholder="Update Status" />
               </SelectTrigger>
               <SelectContent>
@@ -245,7 +256,7 @@ export default function OrderDetailBlock({
                   <SelectItem key={s} value={s}>
                     {s === OrderStatus.CANCELLED
                       ? "Cancel Order"
-                      : `Mark as ${s}`}
+                      : `Mark as ${formatStatus(s)}`}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -288,7 +299,7 @@ export default function OrderDetailBlock({
                           : "text-muted-foreground"
                       }`}
                     >
-                      {step}
+                      {formatStatus(step)}
                     </span>
                     {idx < statusSteps.length - 1 && (
                       <div

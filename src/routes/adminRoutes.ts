@@ -1,5 +1,5 @@
 import { Route } from "@/types";
-import { LayoutDashboard, User, ChefHat } from "lucide-react";
+import { LayoutDashboard, User, ChefHat, ShoppingCart } from "lucide-react";
 
 export const adminRoutes: Route[] = [
   {
@@ -19,6 +19,16 @@ export const adminRoutes: Route[] = [
         title: "Categories",
         url: "/admin-dashboard/categories",
         icon: ChefHat,
+      },
+    ],
+  },
+  {
+    title: "Order Management",
+    items: [
+      {
+        title: "Orders",
+        url: "/admin-dashboard/orders",
+        icon: ShoppingCart,
       },
     ],
   },
