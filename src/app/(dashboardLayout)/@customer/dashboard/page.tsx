@@ -45,6 +45,7 @@ export default async function CustomerDashboardHome() {
   const orders: Order[] = ordersResult.data?.data?.data ?? [];
   const ordersMeta = ordersResult.data?.data?.meta ?? null;
   const reviews: Review[] = reviewsResult.data?.data?.data ?? [];
+  const reviewsMeta = reviewsResult.data?.data?.meta ?? null;
 
   const totalOrders = ordersMeta?.count ?? orders.length;
   const activeStatuses = new Set([
@@ -59,7 +60,7 @@ export default async function CustomerDashboardHome() {
   const deliveredOrders = orders.filter(
     (o) => o.status === OrderStatus.DELIVERED,
   ).length;
-  const totalReviews = reviews.length;
+  const totalReviews = reviewsMeta?.count ?? reviews.length;
 
   const stats = [
     {
