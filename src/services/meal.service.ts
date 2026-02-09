@@ -39,9 +39,9 @@ export const mealService = {
         };
       }
 
-      const categories = await res.json();
+      const meals = await res.json();
 
-      return { data: categories, error: null };
+      return { data: meals, error: null };
     } catch (error) {
       console.error(error);
       return { data: null, error: { message: "Something went wrong." } };
@@ -66,9 +66,9 @@ export const mealService = {
         };
       }
 
-      const categories = await res.json();
+      const meals = await res.json();
 
-      return { data: categories, error: null };
+      return { data: meals, error: null };
     } catch (error) {
       console.error(error);
       return { data: null, error: { message: "Something went wrong." } };

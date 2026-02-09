@@ -1,16 +1,28 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
-import { Category } from "@/types/category.type";
 
 const API_URL = env.API_URL;
 
 export const categoryService = {
-  getAll: async function (): Promise<{
-    data: Category[] | null;
-    error: { message: string } | null;
-  }> {
+  getAll: async function (params: {
+    search?: string;
+    page?: string;
+    limit?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  }) {
     try {
-      const res = await fetch(`${API_URL}/categories`, {
+      const url = new URL(`${API_URL}/categories`);
+
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== "") {
+            url.searchParams.append(key, value);
+          }
+        });
+      }
+
+      const res = await fetch(url, {
         next: { revalidate: 60 },
       });
 
@@ -23,7 +35,7 @@ export const categoryService = {
 
       const categories = await res.json();
 
-      return { data: categories.data, error: null };
+      return { data: categories, error: null };
     } catch (error) {
       console.error(error);
       return { data: null, error: { message: "Something went wrong." } };
@@ -34,10 +46,7 @@ export const categoryService = {
     name: string;
     emoji: string;
     image: string;
-  }): Promise<{
-    data: Category | null;
-    error: { message: string } | null;
-  }> {
+  }) {
     try {
       const cookieStore = await cookies();
 
@@ -73,10 +82,7 @@ export const categoryService = {
     }
   },
 
-  getById: async function (id: string): Promise<{
-    data: Category | null;
-    error: { message: string } | null;
-  }> {
+  getById: async function (id: string) {
     try {
       const cookieStore = await cookies();
 
@@ -108,10 +114,7 @@ export const categoryService = {
     name: string;
     emoji: string;
     image: string;
-  }): Promise<{
-    data: Category | null;
-    error: { message: string } | null;
-  }> {
+  }) {
     try {
       const cookieStore = await cookies();
 
@@ -147,10 +150,7 @@ export const categoryService = {
     }
   },
 
-  delete: async function (id: string): Promise<{
-    data: Category | null;
-    error: { message: string } | null;
-  }> {
+  delete: async function (id: string) {
     try {
       const cookieStore = await cookies();
 

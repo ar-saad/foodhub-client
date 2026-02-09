@@ -68,9 +68,9 @@ export default function BrowseMealPage() {
   // Fetch categories on mount
   useEffect(() => {
     async function loadCategories() {
-      const result = await getCategories();
+      const result = await getCategories({ limit: "99999" });
       if (result.data) {
-        setCategories(result.data);
+        setCategories(result.data?.data?.data);
       }
     }
     loadCategories();

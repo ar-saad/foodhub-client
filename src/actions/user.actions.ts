@@ -11,11 +11,11 @@ export async function getUser(userId: string) {
 }
 
 export async function getUsers(params: {
-  search: string;
-  page: string;
-  limit: string;
-  sortBy: string;
-  sortOrder: string;
+  search?: string;
+  page?: string;
+  limit?: string;
+  sortBy?: string;
+  sortOrder?: string;
 }) {
   return await userService.getUsers(params);
 }

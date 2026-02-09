@@ -10,11 +10,14 @@ export default async function UpdateMealPage({
   const { id } = await params;
 
   const getMeal = mealService.getById(id);
-  const getCategories = categoryService.getAll();
+  const getCategories = categoryService.getAll({ limit: "99999" });
 
   const [meal, categories] = await Promise.all([getMeal, getCategories]);
 
   return (
-    <MealUpdateForm meal={meal.data.data} categories={categories.data ?? []} />
+    <MealUpdateForm
+      meal={meal.data.data}
+      categories={categories.data?.data?.data ?? []}
+    />
   );
 }

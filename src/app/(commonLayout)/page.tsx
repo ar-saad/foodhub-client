@@ -7,11 +7,11 @@ import { getAllProviders } from "@/actions/provider.actions";
 
 export default async function HomePage() {
   const [categoriesResponse, providersResponse] = await Promise.all([
-    getCategories(),
+    getCategories({ limit: "99999" }),
     getAllProviders(),
   ]);
 
-  const allCategories = categoriesResponse.data ?? [];
+  const allCategories = categoriesResponse.data?.data?.data ?? [];
   const allProviders = providersResponse.data.data ?? [];
 
   // Shuffle and pick up to 16 random categories, then split into 2 sets of 8

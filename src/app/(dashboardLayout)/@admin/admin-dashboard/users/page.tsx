@@ -74,7 +74,7 @@ export default function AdminDashboardUserListPage() {
           setUsers([]);
           setMeta(null);
         } else {
-          setUsers(result.data?.data.result ?? []);
+          setUsers(result.data?.data?.data ?? []);
           setMeta(result.data?.data?.meta ?? null);
         }
       } catch {

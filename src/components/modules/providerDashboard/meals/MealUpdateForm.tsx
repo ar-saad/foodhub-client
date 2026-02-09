@@ -282,7 +282,7 @@ export default function MealUpdateForm({
                     alt="meal photo"
                     width={350}
                     height={250}
-                    className="max-h-40 max-w-80 h-auto w-auto object-contain"
+                    className="max-h-64 max-w-87 h-auto w-auto object-contain"
                   />
                 </div>
               </Field>

@@ -162,8 +162,6 @@ export default async function ProviderDashboardHome() {
           </Link>
         </CardHeader>
         <CardContent>
-          {/* You can create a ProviderOrderListBlock similar to OrderListBlock for providers if needed */}
-          {/* For now, just list basic order info */}
           <ul className="space-y-2">
             {orders.slice(0, 5).map((order) => (
               <li key={order.id} className="border rounded p-3 flex flex-col">
