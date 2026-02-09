@@ -4,6 +4,7 @@ import { MapPin, UtensilsCrossed } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import MealCard from "../browse/MealCard";
 import Image from "next/image";
+import RestaurantReviewsSection from "./RestaurantReviewsSection";
 
 export default function RestaurantPublicProfile({
   provider,
@@ -96,6 +97,11 @@ export default function RestaurantPublicProfile({
           </Card>
         )}
       </div>
+
+      {/* Reviews Section */}
+      {provider.meals && provider.meals.length > 0 && (
+        <RestaurantReviewsSection meals={provider.meals} />
+      )}
     </div>
   );
 }

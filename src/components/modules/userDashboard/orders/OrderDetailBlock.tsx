@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getOrder, updateOrderStatus } from "@/actions/order.actions";
+import { updateOrderStatus } from "@/actions/order.actions";
 import { Order, OrderStatus } from "@/types/order.type";
+import { Review } from "@/types/review.type";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,7 +33,6 @@ import {
 import ConfirmationDialog from "@/components/common/ConfirmationDialog";
 import {
   ArrowLeft,
-  Loader2,
   MapPin,
   CreditCard,
   Package,
@@ -45,11 +45,15 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import { useUser } from "@/contexts/UserContext";
+import ReviewFormDialog from "@/components/modules/common/ReviewFormDialog";
+import StarRating from "@/components/modules/common/StarRating";
 
 type OrderDetailRole = "CUSTOMER" | "PROVIDER" | "ADMIN";
 
 interface OrderDetailBlockProps {
-  orderId: string;
+  order: Order;
   role: OrderDetailRole;
 }
 
@@ -83,17 +87,6 @@ const statusSteps: OrderStatus[] = [
   OrderStatus.DELIVERED,
 ];
 
-function formatDate(dateStr?: string) {
-  if (!dateStr) return "—";
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
 function formatCurrency(amount: string | number) {
   return `৳${Number(amount).toFixed(2)}`;
 }
@@ -102,53 +95,43 @@ function formatStatus(status: string) {
   return status.replace(/_/g, " ");
 }
 
-function getStepIndex(status: OrderStatus) {
-  const idx = statusSteps.indexOf(status);
-  return idx === -1 ? -1 : idx;
-}
-
-/** Returns the statuses a provider can move the order forward to (no rollback). */
 function getProviderNextStatuses(current: OrderStatus): OrderStatus[] {
   const currentIdx = statusSteps.indexOf(current);
-  if (currentIdx === -1) return []; // CANCELLED — no transitions
+  if (currentIdx === -1) return [];
   return [...statusSteps.slice(currentIdx + 1), OrderStatus.CANCELLED];
 }
 
 export default function OrderDetailBlock({
-  orderId,
+  order,
   role,
 }: OrderDetailBlockProps) {
   const router = useRouter();
-  const [order, setOrder] = useState<Order | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { user } = useUser();
   const [updating, setUpdating] = useState(false);
 
-  useEffect(() => {
-    async function loadOrder() {
-      setLoading(true);
-      setError(null);
-      try {
-        const result = await getOrder(orderId);
-        if (result.error) {
-          setError(result.error.message);
-          setOrder(null);
-        } else {
-          setOrder(result.data?.data ?? null);
-        }
-      } catch {
-        setError("Failed to load order.");
-        setOrder(null);
-      } finally {
-        setLoading(false);
+  // Build a mealId → Review map from order.reviews
+  const reviewMap = useMemo(() => {
+    const map: Record<string, Review> = {};
+    if (order.reviews) {
+      for (const review of order.reviews) {
+        map[review.mealId] = review;
       }
     }
+    return map;
+  }, [order.reviews]);
 
-    loadOrder();
-  }, [orderId]);
+  const isCancelled = order.status === OrderStatus.CANCELLED;
+  const currentStepIdx = statusSteps.indexOf(order.status);
+  const showCustomerInfo = role === "PROVIDER" || role === "ADMIN";
+  const showProviderInfo = role === "CUSTOMER" || role === "ADMIN";
+  const canCustomerCancel =
+    role === "CUSTOMER" && order.status === OrderStatus.PLACED;
+  const providerNextStatuses =
+    role === "PROVIDER" ? getProviderNextStatuses(order.status) : [];
+  const canReview =
+    role === "CUSTOMER" && order.status === OrderStatus.DELIVERED;
 
   async function handleStatusUpdate(newStatus: OrderStatus) {
-    if (!order) return;
     setUpdating(true);
     const toastId = toast.loading("Updating order status...");
     try {
@@ -162,7 +145,7 @@ export default function OrderDetailBlock({
         toast.success(`Order status updated to ${formatStatus(newStatus)}`, {
           id: toastId,
         });
-        setOrder((prev) => (prev ? { ...prev, status: newStatus } : prev));
+        router.refresh();
       }
     } catch {
       toast.error("Failed to update order status.", { id: toastId });
@@ -171,36 +154,9 @@ export default function OrderDetailBlock({
     }
   }
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+  function handleReviewSuccess() {
+    router.refresh();
   }
-
-  if (error || !order) {
-    return (
-      <div className="space-y-4">
-        <Button variant="ghost" size="sm" onClick={() => router.back()}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back
-        </Button>
-        <div className="text-center py-12 text-muted-foreground">
-          {error || "Order not found."}
-        </div>
-      </div>
-    );
-  }
-
-  const isCancelled = order.status === OrderStatus.CANCELLED;
-  const currentStepIdx = getStepIndex(order.status);
-  const showCustomerInfo = role === "PROVIDER" || role === "ADMIN";
-  const showProviderInfo = role === "CUSTOMER" || role === "ADMIN";
-
-  const canCustomerCancel =
-    role === "CUSTOMER" && order.status === OrderStatus.PLACED;
-  const providerNextStatuses =
-    role === "PROVIDER" ? getProviderNextStatuses(order.status) : [];
 
   return (
     <div className="space-y-6">
@@ -225,7 +181,6 @@ export default function OrderDetailBlock({
             {formatStatus(order.status)}
           </Badge>
 
-          {/* Customer cancel button */}
           {canCustomerCancel && (
             <ConfirmationDialog
               title="Cancel Order"
@@ -241,7 +196,6 @@ export default function OrderDetailBlock({
             />
           )}
 
-          {/* Provider status update dropdown */}
           {role === "PROVIDER" && providerNextStatuses.length > 0 && (
             <Select
               key={order.status}
@@ -266,7 +220,7 @@ export default function OrderDetailBlock({
       </div>
 
       {/* Status Tracker */}
-      {!isCancelled && (
+      {!isCancelled ? (
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
@@ -316,9 +270,7 @@ export default function OrderDetailBlock({
             </div>
           </CardContent>
         </Card>
-      )}
-
-      {isCancelled && (
+      ) : (
         <Card className="border-destructive/50">
           <CardContent className="pt-6">
             <p className="text-destructive font-medium text-center">
@@ -360,14 +312,20 @@ export default function OrderDetailBlock({
               <span className="text-muted-foreground flex items-center gap-1">
                 <CalendarDays className="h-3.5 w-3.5" /> Placed On
               </span>
-              <span>{formatDate(order.createdAt)}</span>
+              <span>
+                {order.createdAt
+                  ? format(new Date(order.createdAt), "MMM d, yyyy hh:mm a")
+                  : "—"}
+              </span>
             </div>
             {order.updatedAt && order.updatedAt !== order.createdAt && (
               <>
                 <Separator />
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Last Updated</span>
-                  <span>{formatDate(order.updatedAt)}</span>
+                  <span>
+                    {format(new Date(order.updatedAt), "MMM d, yyyy hh:mm a")}
+                  </span>
                 </div>
               </>
             )}
@@ -458,11 +416,14 @@ export default function OrderDetailBlock({
                   <TableHead className="text-center">Qty</TableHead>
                   <TableHead className="text-right">Price</TableHead>
                   <TableHead className="text-right">Subtotal</TableHead>
+                  {canReview && (
+                    <TableHead className="text-center">Review</TableHead>
+                  )}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {order.orderItems.map((item, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={item.mealId}>
                     <TableCell className="w-10">{index + 1}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -489,12 +450,53 @@ export default function OrderDetailBlock({
                     <TableCell className="text-right font-medium">
                       {formatCurrency(Number(item.price) * item.quantity)}
                     </TableCell>
+                    {canReview && user && (
+                      <TableCell className="text-center">
+                        {reviewMap[item.mealId] ? (
+                          <div className="flex flex-col items-center gap-1">
+                            <StarRating
+                              value={reviewMap[item.mealId].rating}
+                              readonly
+                              size="sm"
+                            />
+                            <ReviewFormDialog
+                              trigger={
+                                <button className="text-xs text-primary hover:underline cursor-pointer">
+                                  Edit
+                                </button>
+                              }
+                              mealId={item.mealId}
+                              orderId={order.id}
+                              customerId={user.id}
+                              mealName={item.meal?.name ?? "Meal"}
+                              mealImage={item.meal?.image}
+                              existingReview={reviewMap[item.mealId]}
+                              onSuccess={handleReviewSuccess}
+                            />
+                          </div>
+                        ) : (
+                          <ReviewFormDialog
+                            trigger={
+                              <Button variant="outline" size="sm">
+                                Leave Review
+                              </Button>
+                            }
+                            mealId={item.mealId}
+                            orderId={order.id}
+                            customerId={user.id}
+                            mealName={item.meal?.name ?? "Meal"}
+                            mealImage={item.meal?.image}
+                            onSuccess={handleReviewSuccess}
+                          />
+                        )}
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
 
                 {/* Total row */}
                 <TableRow className="bg-muted/50 font-semibold">
-                  <TableCell colSpan={4} className="text-right">
+                  <TableCell colSpan={canReview ? 5 : 4} className="text-right">
                     Total
                   </TableCell>
                   <TableCell className="text-right">

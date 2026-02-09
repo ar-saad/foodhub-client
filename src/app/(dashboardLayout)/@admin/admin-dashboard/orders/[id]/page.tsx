@@ -1,4 +1,6 @@
+import { getOrder } from "@/actions/order.actions";
 import OrderDetailBlock from "@/components/modules/userDashboard/orders/OrderDetailBlock";
+import { notFound } from "next/navigation";
 
 export default async function AdminOrderDetailPage({
   params,
@@ -6,10 +8,15 @@ export default async function AdminOrderDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const result = await getOrder(id);
+
+  if (result.error || !result.data?.data) {
+    notFound();
+  }
 
   return (
     <div>
-      <OrderDetailBlock orderId={id} role="ADMIN" />
+      <OrderDetailBlock order={result.data.data} role="ADMIN" />
     </div>
   );
 }

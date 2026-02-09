@@ -3,13 +3,19 @@
 import { mealService } from "@/services/meal.service";
 
 export async function getMeals(params: {
+  limit?: string;
   search?: string;
   sortBy?: string;
   sortOrder?: string;
   categoryId?: string;
+  providerId?: string;
   isFeatured?: string;
 }) {
   return await mealService.getAll(params);
+}
+
+export async function getMeal(id: string) {
+  return await mealService.getById(id);
 }
 
 export async function createMeal(payload: {

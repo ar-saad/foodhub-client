@@ -1,21 +1,20 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
+import { CreateReviewPayload, UpdateReviewPayload } from "@/types/review.type";
 
 const API_URL = env.API_URL;
 
-export const mealService = {
-  getAll: async function (params: {
+export const reviewService = {
+  getReviews: async function (params: {
+    mealId?: string;
+    customerId?: string;
+    orderId?: string;
+    page?: string;
     limit?: string;
-    search?: string;
-    sortBy?: string;
-    sortOrder?: string;
-    categoryId?: string;
-    providerId?: string;
-    isFeatured?: string;
   }) {
     try {
       const cookieStore = await cookies();
-      const url = new URL(`${API_URL}/meals`);
+      const url = new URL(`${API_URL}/reviews`);
 
       if (params) {
         Object.entries(params).forEach(([key, value]) => {
@@ -25,7 +24,7 @@ export const mealService = {
         });
       }
 
-      const res = await fetch(url, {
+      const res = await fetch(url.toString(), {
         headers: {
           Cookie: cookieStore.toString(),
         },
@@ -33,62 +32,31 @@ export const mealService = {
       });
 
       if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
         return {
           data: null,
-          error: { message: "Failed to fetch meals." },
+          error: {
+            message: errorData?.message || "Failed to fetch reviews.",
+          },
         };
       }
 
-      const categories = await res.json();
-
-      return { data: categories, error: null };
+      const result = await res.json();
+      return { data: result, error: null };
     } catch (error) {
       console.error(error);
-      return { data: null, error: { message: "Something went wrong." } };
+      return {
+        data: null,
+        error: { message: "Something went wrong." },
+      };
     }
   },
 
-  getById: async function (id: string) {
+  create: async function (payload: CreateReviewPayload) {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/meals/${id}`, {
-        headers: {
-          Cookie: cookieStore.toString(),
-        },
-        cache: "no-store",
-      });
-
-      if (!res.ok) {
-        return {
-          data: null,
-          error: { message: "Failed to fetch meal." },
-        };
-      }
-
-      const categories = await res.json();
-
-      return { data: categories, error: null };
-    } catch (error) {
-      console.error(error);
-      return { data: null, error: { message: "Something went wrong." } };
-    }
-  },
-
-  create: async function (payload: {
-    providerId: string;
-    categoryId: string;
-    name: string;
-    description: string;
-    price: number;
-    image: string;
-    isAvailable: boolean;
-    isFeatured: boolean;
-  }) {
-    try {
-      const cookieStore = await cookies();
-
-      const res = await fetch(`${API_URL}/meals`, {
+      const res = await fetch(`${API_URL}/reviews`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,13 +71,12 @@ export const mealService = {
         return {
           data: null,
           error: {
-            message: errorData?.message || "Failed to create category.",
+            message: errorData?.message || "Failed to submit review.",
           },
         };
       }
 
       const result = await res.json();
-
       return { data: result.data, error: null };
     } catch (error) {
       console.error(error);
@@ -120,21 +87,11 @@ export const mealService = {
     }
   },
 
-  update: async function (payload: {
-    mealId: string;
-    providerId: string;
-    categoryId: string;
-    name: string;
-    description: string;
-    price: number;
-    image: string;
-    isAvailable: boolean;
-    isFeatured: boolean;
-  }) {
+  update: async function (reviewId: string, payload: UpdateReviewPayload) {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/meals/${payload.mealId}`, {
+      const res = await fetch(`${API_URL}/reviews/${reviewId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -149,13 +106,12 @@ export const mealService = {
         return {
           data: null,
           error: {
-            message: errorData?.message || "Failed to create category.",
+            message: errorData?.message || "Failed to update review.",
           },
         };
       }
 
       const result = await res.json();
-
       return { data: result.data, error: null };
     } catch (error) {
       console.error(error);
@@ -166,15 +122,16 @@ export const mealService = {
     }
   },
 
-  delete: async function (id: string) {
+  delete: async function (reviewId: string) {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${API_URL}/meals/${id}`, {
+      const res = await fetch(`${API_URL}/reviews/${reviewId}`, {
         method: "DELETE",
         headers: {
           Cookie: cookieStore.toString(),
         },
+        cache: "no-store",
       });
 
       if (!res.ok) {
@@ -182,13 +139,12 @@ export const mealService = {
         return {
           data: null,
           error: {
-            message: errorData?.message || "Failed to delete category.",
+            message: errorData?.message || "Failed to delete review.",
           },
         };
       }
 
       const result = await res.json();
-
       return { data: result.data, error: null };
     } catch (error) {
       console.error(error);

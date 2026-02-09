@@ -1,3 +1,5 @@
+import { Review } from "./review.type";
+
 export enum OrderStatus {
   PLACED = "PLACED",
   PREPARING = "PREPARING",
@@ -59,4 +61,5 @@ export interface Order {
     name: string;
     logo?: string;
   };
+  reviews?: Review[];
 }

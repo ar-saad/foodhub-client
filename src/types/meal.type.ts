@@ -13,4 +13,6 @@ export interface Meal {
   isFeatured: boolean;
   providerProfile?: Provider;
   category?: Category;
+  averageRating?: number;
+  totalReviews?: number;
 }
