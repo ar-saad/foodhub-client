@@ -7,11 +7,22 @@ import {
   useState,
   useCallback,
   useMemo,
+  useRef,
   ReactNode,
 } from "react";
 import { Cart, CartItem } from "@/types/cart.type";
 import { Meal } from "@/types/meal.type";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const CART_STORAGE_KEY = "foodhub-cart";
 
@@ -58,10 +69,24 @@ function saveCartToStorage(cart: Cart) {
   }
 }
 
+interface PendingItem {
+  meal: Meal;
+  providerId: string;
+  providerName: string;
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<Cart>(emptyCart);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [pendingItem, setPendingItem] = useState<PendingItem | null>(null);
+  const [showProviderConflict, setShowProviderConflict] = useState(false);
+  const cartRef = useRef(cart);
+
+  // Keep ref in sync
+  useEffect(() => {
+    cartRef.current = cart;
+  }, [cart]);
 
   // Hydrate from localStorage on mount
   useEffect(() => {
@@ -78,29 +103,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addItem = useCallback(
     (meal: Meal, providerId: string, providerName: string) => {
-      setCart((prev) => {
-        // If cart has items from a different provider, ask to clear
-        if (prev.providerId && prev.providerId !== providerId) {
-          const confirmed = window.confirm(
-            `Your cart has items from "${prev.providerName}". Adding this item will clear your current cart. Continue?`,
-          );
-          if (!confirmed) return prev;
-          // Clear and start fresh with new provider
-          return {
-            providerId,
-            providerName,
-            items: [{ meal, quantity: 1 }],
-          };
-        }
+      const current = cartRef.current;
 
-        // Check if meal already in cart
+      // If cart has items from a different provider, show confirmation dialog
+      if (current.providerId && current.providerId !== providerId) {
+        setPendingItem({ meal, providerId, providerName });
+        setShowProviderConflict(true);
+        return;
+      }
+
+      // No conflict — add directly
+      setCart((prev) => {
         const existingIndex = prev.items.findIndex(
           (item) => item.meal.id === meal.id,
         );
 
         let newItems: CartItem[];
         if (existingIndex > -1) {
-          // Increment quantity
           newItems = prev.items.map((item, i) =>
             i === existingIndex
               ? { ...item, quantity: item.quantity + 1 }
@@ -121,6 +140,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     },
     [],
   );
+
+  const handleConfirmProviderSwitch = useCallback(() => {
+    if (!pendingItem) return;
+    const { meal, providerId, providerName } = pendingItem;
+    setCart({
+      providerId,
+      providerName,
+      items: [{ meal, quantity: 1 }],
+    });
+    toast.success(`${meal.name} added to cart`);
+    setPendingItem(null);
+    setShowProviderConflict(false);
+  }, [pendingItem]);
+
+  const handleCancelProviderSwitch = useCallback(() => {
+    setPendingItem(null);
+    setShowProviderConflict(false);
+  }, []);
 
   const removeItem = useCallback((mealId: string) => {
     setCart((prev) => {
@@ -162,21 +199,52 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <CartContext.Provider
-      value={{
-        cart,
-        addItem,
-        removeItem,
-        updateQuantity,
-        clearCart,
-        totalItems,
-        totalPrice,
-        isCartOpen,
-        setIsCartOpen,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
+    <>
+      <CartContext.Provider
+        value={{
+          cart,
+          addItem,
+          removeItem,
+          updateQuantity,
+          clearCart,
+          totalItems,
+          totalPrice,
+          isCartOpen,
+          setIsCartOpen,
+        }}
+      >
+        {children}
+      </CartContext.Provider>
+
+      {/* Provider-conflict confirmation dialog */}
+      <AlertDialog
+        open={showProviderConflict}
+        onOpenChange={(open) => {
+          if (!open) handleCancelProviderSwitch();
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Replace cart items?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your cart has items from{" "}
+              <span className="font-semibold">{cart.providerName}</span>. Adding
+              this item will clear your current cart and start a new one from{" "}
+              <span className="font-semibold">{pendingItem?.providerName}</span>
+              .
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelProviderSwitch}>
+              Keep current cart
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmProviderSwitch}>
+              Clear &amp; add new item
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 

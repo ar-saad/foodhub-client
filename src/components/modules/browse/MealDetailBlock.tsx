@@ -18,7 +18,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 interface MealDetailBlockProps {
   meal: Meal;
@@ -31,7 +30,6 @@ export default function MealDetailBlock({ meal }: MealDetailBlockProps) {
   function handleAddToCart() {
     if (!meal.providerId || !meal.providerProfile) return;
     addItem(meal, meal.providerId, meal.providerProfile.name);
-    toast.success(`${meal.name} added to cart!`);
   }
 
   return (
