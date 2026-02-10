@@ -8,6 +8,9 @@ export const providerService = {
     try {
       const res = await fetch(
         `${API_URL}/provider-profiles${search ? `?search=${search}` : ""}`,
+        {
+          cache: "no-store",
+        },
       );
 
       if (!res.ok) {
