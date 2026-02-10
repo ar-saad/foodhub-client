@@ -23,7 +23,9 @@ export const categoryService = {
       }
 
       const res = await fetch(url, {
-        cache: "no-store",
+        next: {
+          revalidate: 30,
+        },
       });
 
       if (!res.ok) {
