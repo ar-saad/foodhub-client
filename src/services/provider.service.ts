@@ -8,9 +8,6 @@ export const providerService = {
     try {
       const res = await fetch(
         `${API_URL}/provider-profiles${search ? `?search=${search}` : ""}`,
-        {
-          next: { revalidate: 60 },
-        },
       );
 
       if (!res.ok) {
