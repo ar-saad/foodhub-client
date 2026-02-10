@@ -2,14 +2,17 @@
 
 import { categoryService } from "@/services/category.service";
 
-export async function getCategories(params: {
-  search?: string;
-  page?: string;
-  limit?: string;
-  sortBy?: string;
-  sortOrder?: string;
-}) {
-  return await categoryService.getAll(params);
+export async function getCategories(
+  params: {
+    search?: string;
+    page?: string;
+    limit?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  },
+  options?: { revalidate?: number },
+) {
+  return await categoryService.getAll(params, options);
 }
 
 export async function getCategoryById(id: string) {

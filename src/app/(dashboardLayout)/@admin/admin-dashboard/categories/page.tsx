@@ -65,13 +65,16 @@ export default function CategoryListPage() {
       setLoading(true);
 
       try {
-        const result = await getCategories({
-          search: searchParams.get("search") || "",
-          page: searchParams.get("page") || "1",
-          limit: searchParams.get("limit") || "10",
-          sortBy: searchParams.get("sortBy") || "name",
-          sortOrder: searchParams.get("sortOrder") || "asc",
-        });
+        const result = await getCategories(
+          {
+            search: searchParams.get("search") || "",
+            page: searchParams.get("page") || "1",
+            limit: searchParams.get("limit") || "10",
+            sortBy: searchParams.get("sortBy") || "name",
+            sortOrder: searchParams.get("sortOrder") || "asc",
+          },
+          { revalidate: 0 },
+        );
 
         if (result.error) {
           setCategories([]);

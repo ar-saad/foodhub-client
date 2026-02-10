@@ -4,13 +4,16 @@ import { cookies } from "next/headers";
 const API_URL = env.API_URL;
 
 export const categoryService = {
-  getAll: async function (params: {
-    search?: string;
-    page?: string;
-    limit?: string;
-    sortBy?: string;
-    sortOrder?: string;
-  }) {
+  getAll: async function (
+    params: {
+      search?: string;
+      page?: string;
+      limit?: string;
+      sortBy?: string;
+      sortOrder?: string;
+    } = {},
+    options?: { revalidate?: number },
+  ) {
     try {
       const url = new URL(`${API_URL}/categories`);
 
@@ -22,9 +25,11 @@ export const categoryService = {
         });
       }
 
+      const revalidate = options?.revalidate ?? 30;
+
       const res = await fetch(url, {
         next: {
-          revalidate: 30,
+          revalidate,
         },
       });
 

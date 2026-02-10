@@ -32,9 +32,12 @@ export default async function AdminDashboardHome() {
       orderService.getOrders({
         limit: "5",
       }),
-      categoryService.getAll({
-        limit: "1",
-      }),
+      categoryService.getAll(
+        {
+          limit: "1",
+        },
+        { revalidate: 0 },
+      ),
       mealService.getAll({ limit: "1" }),
     ]);
 
