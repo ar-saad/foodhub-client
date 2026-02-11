@@ -12,7 +12,7 @@ interface ProviderCardProps {
 
 export default function ProviderCard({ provider }: ProviderCardProps) {
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full py-0 gap-2">
       <div className="relative h-48 w-full bg-gray-100">
         {provider.logo ? (
           <Image
@@ -37,7 +37,7 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
         </div>
       </div>
 
-      <CardContent className="p-4 space-y-3">
+      <CardContent className="p-4 space-y-3 flex-1 flex flex-col">
         <div>
           <h3 className="text-lg font-semibold line-clamp-2">
             {provider.name}
@@ -50,7 +50,7 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
         </div>
 
         {provider.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="text-sm text-muted-foreground line-clamp-2 min-h-10">
             {provider.description}
           </p>
         )}
@@ -70,7 +70,7 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
         )}
       </CardContent>
 
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-4 pt-0 mt-auto">
         <Link href={`/restaurants/${provider.id}`} className="w-full">
           <Button variant="default" className="w-full">
             View Menu

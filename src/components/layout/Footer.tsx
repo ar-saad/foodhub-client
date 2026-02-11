@@ -77,12 +77,17 @@ const Footer = ({
   ],
 }: Footer2Props) => {
   return (
-    <section className={cn("pt-32 pb-12 px-16", className)}>
-      <div className="container mx-auto px-4">
+    <section
+      className={cn(
+        "pt-16 pb-8 px-4 sm:pt-24 sm:pb-12 sm:px-8 lg:pt-32 lg:pb-12 lg:px-16",
+        className,
+      )}
+    >
+      <div className="container mx-auto px-0 sm:px-4">
         <footer>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="mb-8 lg:mb-0">
-              <div className="flex items-center gap-2 lg:justify-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-5">
+            <div className="mb-8 md:mb-0 flex flex-col items-center md:items-start">
+              <div className="flex items-center gap-2 justify-center md:justify-start">
                 <Logo url="/">
                   <Image
                     src={footerLogo}
@@ -92,21 +97,24 @@ const Footer = ({
                   />
                 </Logo>
               </div>
-              <p className="mt-4 font-medium text-muted-foreground">
+              <p className="mt-4 font-medium text-muted-foreground text-center md:text-left">
                 {tagline}
               </p>
             </div>
-            <div className="flex justify-center gap-20">
+            <div className="flex flex-col items-center md:items-start gap-8 md:flex-row md:justify-center md:gap-20">
               {menuItems.map((section, sectionIdx) => (
-                <div key={sectionIdx}>
-                  <h3 className="mb-4 text-primary font-bold">
+                <div
+                  key={sectionIdx}
+                  className="w-full md:w-auto flex flex-col items-center md:items-start"
+                >
+                  <h3 className="mb-4 text-primary font-bold text-center md:text-left">
                     {section.title}
                   </h3>
                   <ul className="space-y-4 text-muted-foreground">
                     {section.links.map((link, linkIdx) => (
                       <li
                         key={linkIdx}
-                        className="text-sm font-medium hover:text-primary"
+                        className="text-sm font-medium hover:text-primary text-center md:text-left"
                       >
                         <a href={link.url}>{link.text}</a>
                       </li>
@@ -116,9 +124,9 @@ const Footer = ({
               ))}
             </div>
           </div>
-          <div className="mt-16 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium text-muted-foreground md:flex-row md:items-center">
-            <p>{copyright}</p>
-            <ul className="flex gap-4">
+          <div className="mt-12 md:mt-16 flex flex-col items-center md:flex-row md:justify-between gap-4 border-t pt-6 md:pt-8 text-sm font-medium text-muted-foreground">
+            <p className="text-center md:text-left">{copyright}</p>
+            <ul className="flex flex-wrap justify-center gap-4">
               {bottomLinks.map((link, linkIdx) => (
                 <li key={linkIdx} className="underline hover:text-primary">
                   <a href={link.url}>{link.text}</a>

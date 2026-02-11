@@ -22,7 +22,7 @@ export default function MealCard({ meal }: { meal: Meal }) {
     <Link href={`/browse/${meal.id}`} className="block">
       <Card
         key={meal.id}
-        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 gap-2"
+        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 gap-2 flex flex-col h-full py-0"
       >
         <div className="relative w-full bg-gray-100 h-52">
           {meal.image ? (
@@ -50,8 +50,8 @@ export default function MealCard({ meal }: { meal: Meal }) {
           )}
         </div>
 
-        <CardContent className="p-4">
-          <div className="space-y-2">
+        <CardContent className="p-4 flex-1 flex flex-col">
+          <div className="space-y-2 flex-1 flex flex-col">
             <div className="flex items-start justify-between">
               <h3 className="font-semibold text-lg line-clamp-1">
                 {meal.name}
@@ -64,7 +64,7 @@ export default function MealCard({ meal }: { meal: Meal }) {
               </Badge>
             )}
 
-            <p className="text-sm text-muted-foreground line-clamp-2">
+            <p className="text-sm text-muted-foreground line-clamp-2 min-h-10">
               {meal.description}
             </p>
 
@@ -87,10 +87,12 @@ export default function MealCard({ meal }: { meal: Meal }) {
                 </span>
               </div>
             )}
+            {/* Spacer to push footer down if needed */}
+            <div className="flex-1" />
           </div>
         </CardContent>
 
-        <CardFooter className="p-4 pt-0 flex items-center justify-between">
+        <CardFooter className="p-4 pt-0 flex items-center justify-between mt-auto">
           <div className="text-2xl font-bold text-primary">
             ৳{Number(meal.price).toFixed(2)}
           </div>

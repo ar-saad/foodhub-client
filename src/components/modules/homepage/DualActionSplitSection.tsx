@@ -45,9 +45,9 @@ export default function DualActionSplitSection({
             }}
             className={cn(
               "group relative overflow-hidden rounded-2xl",
-              "h-70 md:h-100",
+              "min-h-100 md:min-h-120",
               "border-2 border-pink-100",
-              "p-8 md:p-12",
+              "p-8 md:p-10 lg:p-12",
               "shadow-md hover:shadow-2xl",
               "transition-all duration-300 ease-out",
               "transform hover:scale-[1.02]",
@@ -135,9 +135,9 @@ export default function DualActionSplitSection({
             }}
             className={cn(
               "group relative overflow-hidden rounded-2xl",
-              "h-70 md:h-100",
+              "min-h-100 md:min-h-120",
               "border-2 border-pink-100",
-              "p-8 md:p-12",
+              "p-8 md:p-10 lg:p-12",
               "shadow-md hover:shadow-2xl",
               "transition-all duration-300 ease-out",
               "transform hover:scale-[1.02]",
