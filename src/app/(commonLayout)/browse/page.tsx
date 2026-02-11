@@ -239,10 +239,10 @@ export default function BrowseMealPage() {
           {meals.length > 0 && page < totalPages && !loading && (
             <div
               ref={observerRef}
-              className="w-full h-10 flex items-center justify-center mt-4"
+              className="w-full h-10 flex items-center justify-center mt-6"
             >
               {isFetchingMore && (
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               )}
             </div>
           )}
