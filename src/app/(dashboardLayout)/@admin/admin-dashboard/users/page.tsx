@@ -18,9 +18,11 @@ export default function AdminDashboardUserListPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [meta, setMeta] = useState<PaginationControlsProps | null>(null);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
 
-  const searchParamValue = searchParams.get("search") || "";
+  // Initialize from URL only once
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || "",
+  );
 
   // Update URL with new parameters
   const updateURL = useCallback(
@@ -40,21 +42,17 @@ export default function AdminDashboardUserListPage() {
     [pathname, router, searchParams],
   );
 
-  // Sync search input from URL
+  // Debounced search
   useEffect(() => {
-    setSearchQuery(searchParamValue);
-  }, [searchParamValue]);
-
-  // Debounced search — resets to page 1 on new search
-  useEffect(() => {
-    if (searchQuery === searchParamValue) return;
-
     const timer = setTimeout(() => {
-      updateURL({ search: searchQuery, page: "" });
+      const currentSearch = searchParams.get("search") || "";
+      if (searchQuery !== currentSearch) {
+        updateURL({ search: searchQuery, page: "" });
+      }
     }, 400);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, searchParamValue, updateURL]);
+  }, [searchQuery, searchParams, updateURL]);
 
   // Fetch users whenever URL params change
   useEffect(() => {

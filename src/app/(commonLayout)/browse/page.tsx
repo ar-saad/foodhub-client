@@ -11,6 +11,7 @@ import { Category } from "@/types/category.type";
 import { Input } from "@/components/ui/input";
 import { Loader2, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function BrowseMealPage() {
   const router = useRouter();
@@ -22,14 +23,16 @@ export default function BrowseMealPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+
+  // Initialize from URL only once
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || "",
+  );
 
   // Get current filter values from URL
   const currentCategory = searchParams.get("category") || "";
   const currentSort = searchParams.get("sort") || "name";
   const currentOrder = searchParams.get("order") || "asc";
-
-  const searchParamValue = searchParams.get("search") || "";
 
   // Update URL with new parameters
   const updateURL = useCallback(
@@ -49,21 +52,7 @@ export default function BrowseMealPage() {
     [pathname, router, searchParams],
   );
 
-  // Sync search input from URL to avoid hydration mismatches
-  useEffect(() => {
-    setSearchQuery(searchParamValue);
-  }, [searchParamValue]);
-
-  // Debounced search
-  useEffect(() => {
-    if (searchQuery === searchParamValue) return;
-
-    const timer = setTimeout(() => {
-      updateURL({ search: searchQuery });
-    }, 400);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery, searchParamValue, updateURL]);
+  // Debounced search removed. Search now triggers only on submit.
 
   // Fetch categories on mount
   useEffect(() => {
@@ -142,15 +131,30 @@ export default function BrowseMealPage() {
     <div className="container max-w-7xl mx-auto px-5 my-5">
       {/* Search Bar */}
       <div className="mb-6 mt-2">
-        <form onSubmit={handleSearchSubmit} className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <Input
-            type="text"
-            placeholder="Search for meals..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-4 py-6 text-lg"
-          />
+        <form
+          onSubmit={handleSearchSubmit}
+          className="relative w-full max-w-xl mx-auto"
+        >
+          <div className="relative flex items-center w-full">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+              <Search className="h-5 w-5" />
+            </span>
+            <Input
+              type="text"
+              placeholder="Search for meals..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 pr-24 py-6 text-lg rounded-full border-2 border-primary/40 focus:border-primary transition-colors w-full shadow-sm"
+            />
+            <Button
+              type="submit"
+              size="lg"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full px-6 py-2 bg-primary text-white font-semibold shadow-md hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:outline-none"
+              style={{ minHeight: "2.5rem" }}
+            >
+              Search
+            </Button>
+          </div>
         </form>
       </div>
 
