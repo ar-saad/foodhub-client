@@ -3,6 +3,7 @@
 import { mealService } from "@/services/meal.service";
 
 export async function getMeals(params: {
+  page?: string;
   limit?: string;
   search?: string;
   sortBy?: string;

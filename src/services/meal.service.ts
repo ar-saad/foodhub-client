@@ -5,6 +5,7 @@ const API_URL = env.API_URL;
 
 export const mealService = {
   getAll: async function (params: {
+    page?: string;
     limit?: string;
     search?: string;
     sortBy?: string;

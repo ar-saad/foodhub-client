@@ -10,12 +10,14 @@ import Image from "next/image";
 import MealCard from "./MealCard";
 
 interface BrowseMealListProps {
+  totalMeals: number;
   meals: Meal[];
   loading: boolean;
   error: string | null;
 }
 
 export default function BrowseMealListBlock({
+  totalMeals,
   meals,
   loading,
   error,
@@ -79,7 +81,7 @@ export default function BrowseMealListBlock({
     <div className="flex-1">
       <div className="mb-4">
         <p className="text-sm text-muted-foreground">
-          Found {meals.length} {meals.length === 1 ? "meal" : "meals"}
+          Found {totalMeals} {totalMeals === 1 ? "meal" : "meals"}
         </p>
       </div>
 
