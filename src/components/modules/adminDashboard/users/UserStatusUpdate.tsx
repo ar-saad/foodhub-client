@@ -45,7 +45,7 @@ export default function UserStatusUpdateForm({ userId }: { userId: string }) {
   };
 
   return (
-    <div className="max-w-xl mx-auto -mt-80 border border-primary p-5 rounded">
+    <div className="max-w-xl mx-auto -mt-45 border border-primary p-5 rounded">
       <h1 className="text-center font-semibold text-primary">Admin Control</h1>
       <Field className="mb-2">
         <FieldLabel>Update Status</FieldLabel>
