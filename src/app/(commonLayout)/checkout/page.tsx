@@ -31,6 +31,7 @@ export default function CheckoutPage() {
   const { user } = useUser();
 
   const [address, setAddress] = useState(user?.address || "");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentType>(PaymentType.COD);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const subtotal = totalPrice;
@@ -79,17 +80,22 @@ export default function CheckoutPage() {
         price: Number(item.meal.price),
       }));
 
-      const { error } = await createOrder({
+      const response = await createOrder({
         customerId: user.id,
         providerId: cart.providerId,
         orderItems,
         totalAmount: Number(grandTotal.toFixed(2)),
         address: address.trim(),
-        paymentType: PaymentType.COD,
+        paymentType: paymentMethod,
       });
 
-      if (error) {
-        toast.error(error.message);
+      if (response.error) {
+        toast.error(response.error.message);
+        return;
+      }
+
+      if (paymentMethod === PaymentType.ONLINE && response.data?.paymentUrl) {
+        window.location.href = response.data.paymentUrl;
         return;
       }
 
@@ -99,7 +105,9 @@ export default function CheckoutPage() {
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
-      setIsSubmitting(false);
+      if (paymentMethod !== PaymentType.ONLINE) {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -158,17 +166,62 @@ export default function CheckoutPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-3 rounded-lg border-2 border-primary bg-primary/5 p-4">
-                <Banknote className="h-6 w-6 text-primary" />
-                <div>
-                  <p className="font-medium">Cash on Delivery (COD)</p>
-                  <p className="text-sm text-muted-foreground">
-                    Pay when your order is delivered
-                  </p>
+              <div className="space-y-4">
+                <div
+                  className={`flex items-center gap-3 rounded-lg border-2 p-4 cursor-pointer transition-colors ${
+                    paymentMethod === PaymentType.COD
+                      ? "border-primary bg-primary/5"
+                      : "border-muted hover:border-primary/50"
+                  }`}
+                  onClick={() => setPaymentMethod(PaymentType.COD)}
+                >
+                  <Banknote
+                    className={`h-6 w-6 ${
+                      paymentMethod === PaymentType.COD
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    }`}
+                  />
+                  <div>
+                    <p className="font-medium">Cash on Delivery (COD)</p>
+                    <p className="text-sm text-muted-foreground">
+                      Pay when your order is delivered
+                    </p>
+                  </div>
+                  {paymentMethod === PaymentType.COD && (
+                    <Badge variant="secondary" className="ml-auto">
+                      Selected
+                    </Badge>
+                  )}
                 </div>
-                <Badge variant="secondary" className="ml-auto">
-                  Selected
-                </Badge>
+
+                <div
+                  className={`flex items-center gap-3 rounded-lg border-2 p-4 cursor-pointer transition-colors ${
+                    paymentMethod === PaymentType.ONLINE
+                      ? "border-primary bg-primary/5"
+                      : "border-muted hover:border-primary/50"
+                  }`}
+                  onClick={() => setPaymentMethod(PaymentType.ONLINE)}
+                >
+                  <Banknote
+                    className={`h-6 w-6 ${
+                      paymentMethod === PaymentType.ONLINE
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    }`}
+                  />
+                  <div>
+                    <p className="font-medium">Online Payment (Stripe)</p>
+                    <p className="text-sm text-muted-foreground">
+                      Pay securely with your credit/debit card
+                    </p>
+                  </div>
+                  {paymentMethod === PaymentType.ONLINE && (
+                    <Badge variant="secondary" className="ml-auto">
+                      Selected
+                    </Badge>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -264,8 +317,9 @@ export default function CheckoutPage() {
               </Button>
 
               <p className="text-xs text-muted-foreground text-center">
-                By placing this order, you agree to pay the total amount upon
-                delivery.
+                {paymentMethod === PaymentType.COD
+                  ? "By placing this order, you agree to pay the total amount upon delivery."
+                  : "You will be redirected to Stripe to securely complete your payment."}
               </p>
             </CardContent>
           </Card>

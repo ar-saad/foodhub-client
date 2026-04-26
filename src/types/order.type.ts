@@ -11,6 +11,7 @@ export enum OrderStatus {
 
 export enum PaymentType {
   COD = "COD",
+  ONLINE = "ONLINE",
 }
 
 export interface OrderItem {
@@ -62,4 +63,12 @@ export interface Order {
     logo?: string;
   };
   reviews?: Review[];
+  paymentStatus?: string;
+  payment?: {
+    id: string;
+    transactionId: string;
+    status: string;
+    checkoutUrl?: string;
+    invoiceUrl?: string;
+  };
 }

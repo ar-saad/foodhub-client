@@ -41,6 +41,7 @@ import {
   Clock,
   CalendarDays,
   Ban,
+  Download,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -157,6 +158,8 @@ export default function OrderDetailBlock({
   function handleReviewSuccess() {
     router.refresh();
   }
+
+  console.log(order)
 
   return (
     <div className="space-y-6">
@@ -294,11 +297,59 @@ export default function OrderDetailBlock({
               <span className="font-mono text-xs">{order.id}</span>
             </div>
             <Separator />
-            <div className="flex justify-between">
-              <span className="text-muted-foreground flex items-center gap-1">
-                <CreditCard className="h-3.5 w-3.5" /> Payment
-              </span>
-              <Badge variant="outline">{order.paymentType}</Badge>
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground flex items-center gap-1">
+                  <CreditCard className="h-3.5 w-3.5" /> Payment Method
+                </span>
+                <Badge variant="outline">{order.paymentType}</Badge>
+              </div>
+              {order.paymentType === "ONLINE" && order.payment && (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground flex items-center gap-1 pl-4.5 text-xs">
+                      Status
+                    </span>
+                    <Badge
+                      variant={
+                        order.payment.status === "PAID"
+                          ? "default"
+                          : "destructive"
+                      }
+                      className="text-[10px] px-1.5 py-0"
+                    >
+                      {order.payment.status}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground flex items-center gap-1 pl-4.5 text-xs">
+                      Transaction ID
+                    </span>
+                    <span className="text-[10px] font-mono bg-muted px-1.5 rounded text-right max-w-[150px] truncate" title={order.payment.transactionId}>
+                      {order.payment.transactionId}
+                    </span>
+                  </div>
+                  {order.payment.status === "UNPAID" && order.payment.checkoutUrl && role === "CUSTOMER" && (
+                    <div className="mt-2">
+                      <Button asChild size="sm" className="w-full text-xs">
+                        <a href={order.payment.checkoutUrl}>
+                          Complete Payment
+                        </a>
+                      </Button>
+                    </div>
+                  )}
+                  {order.payment.status === "PAID" && order.payment.invoiceUrl && (
+                    <div className="mt-2">
+                      <Button asChild variant="outline" size="sm" className="w-full text-xs">
+                        <a href={order.payment.invoiceUrl} target="_blank" rel="noopener noreferrer">
+                          <Download className="h-3 w-3 mr-1" />
+                          Download Invoice
+                        </a>
+                      </Button>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
             <Separator />
             <div className="flex justify-between">
