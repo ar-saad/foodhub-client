@@ -93,7 +93,7 @@ const Footer = ({
                     src={footerLogo}
                     alt={logo.alt}
                     title={logo.title}
-                    className="h-10 w-fit dark:invert"
+                    className="h-10 w-fit"
                   />
                 </Logo>
               </div>

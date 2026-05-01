@@ -29,17 +29,17 @@ export default function RestaurantPublicProfile({
             )}
             <div className="space-y-6">
               <div className="space-y-2">
-                <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
                   {provider.name}
                 </h1>
-                <div className="flex items-center gap-2 text-slate-600">
+                <div className="flex items-center gap-2 text-muted-foreground">
                   <MapPin className="w-5 h-5" />
                   <p className="text-lg">{provider.address}</p>
                 </div>
               </div>
 
               {provider.description && (
-                <p className="text-slate-700 text-lg leading-relaxed max-w-2xl">
+                <p className="text-foreground/80 text-lg leading-relaxed max-w-2xl">
                   {provider.description}
                 </p>
               )}
@@ -61,12 +61,12 @@ export default function RestaurantPublicProfile({
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+            <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
               <UtensilsCrossed className="w-8 h-8 text-purple-600" />
               Our Menu
             </h2>
             {provider.meals && provider.meals.length > 0 && (
-              <p className="text-slate-600 mt-2">
+              <p className="text-muted-foreground mt-2">
                 {provider.meals.length}{" "}
                 {provider.meals.length === 1 ? "item" : "items"} available
               </p>
@@ -81,15 +81,15 @@ export default function RestaurantPublicProfile({
             ))}
           </div>
         ) : (
-          <Card className="p-12 border-slate-200/60 bg-linear-to-br from-slate-50 to-white">
+          <Card className="p-12 border-border/60 bg-card">
             <div className="flex flex-col items-center justify-center text-center space-y-4">
-              <div className="p-4 bg-slate-100 rounded-full">
-                <UtensilsCrossed className="h-12 w-12 text-slate-400" />
+              <div className="p-4 bg-secondary rounded-full">
+                <UtensilsCrossed className="h-12 w-12 text-muted-foreground/50" />
               </div>
-              <h3 className="text-xl font-semibold text-slate-900">
+              <h3 className="text-xl font-semibold text-foreground">
                 No Meals Available
               </h3>
-              <p className="text-slate-600 max-w-md">
+              <p className="text-muted-foreground max-w-md">
                 This restaurant hasn't added any meals to their menu yet. Please
                 check back later!
               </p>

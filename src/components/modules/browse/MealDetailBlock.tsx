@@ -42,7 +42,7 @@ export default function MealDetailBlock({ meal }: MealDetailBlockProps) {
       {/* Main content */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Image */}
-        <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-100">
+        <div className="relative aspect-square rounded-xl overflow-hidden bg-muted">
           {meal.image ? (
             <Image
               src={meal.image}

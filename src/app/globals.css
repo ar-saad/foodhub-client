@@ -52,23 +52,24 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Light Mode Palette - based on Slate and Foodpanda Pink */
+  --background: oklch(1 0 0); /* Pure white */
+  --foreground: oklch(0.205 0.01 252); /* Slate 900 */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.205 0.01 252);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.205 0.01 252);
   --primary: oklch(0.58 0.24 353); /* Food Panda pink #e21b70 */
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.97 0.02 353); /* Very light pink */
-  --secondary-foreground: oklch(0.58 0.24 353);
-  --muted: oklch(0.97 0.01 353);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0.02 353); /* Light pink accent */
+  --secondary: oklch(0.93 0.03 353); /* Light pink */
+  --secondary-foreground: oklch(0.3 0.1 353); /* Dark pink */
+  --muted: oklch(0.97 0.01 252); /* Slate 100 */
+  --muted-foreground: oklch(0.55 0.02 252); /* Slate 500 */
+  --accent: oklch(0.93 0.03 353);
   --accent-foreground: oklch(0.58 0.24 353);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --destructive: oklch(0.6 0.2 25); /* Red 500 */
+  --border: oklch(0.93 0.01 252); /* Slate 200 */
+  --input: oklch(0.93 0.01 252);
   --ring: oklch(0.58 0.24 353); /* Pink focus rings */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -76,47 +77,48 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.58 0.24 353); /* Pink sidebar primary */
+  --sidebar-foreground: oklch(0.205 0.01 252);
+  --sidebar-primary: oklch(0.58 0.24 353);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.97 0.02 353);
+  --sidebar-accent: oklch(0.93 0.03 353);
   --sidebar-accent-foreground: oklch(0.58 0.24 353);
-  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-border: oklch(0.93 0.01 252);
   --sidebar-ring: oklch(0.58 0.24 353);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  /* Dark Mode Palette - based on Zinc and Foodpanda Pink */
+  --background: oklch(0.15 0 0); /* Zinc 950 */
+  --foreground: oklch(0.98 0 0); /* Zinc 50 */
+  --card: oklch(0.2 0 0); /* Zinc 900 */
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.2 0 0);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.58 0.24 353); /* Food Panda pink #e21b70 */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.25 0 0); /* Zinc 800 */
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.25 0 0);
+  --muted-foreground: oklch(0.7 0 0); /* Zinc 400 */
+  --accent: oklch(0.25 0 0);
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.4 0.15 25); /* Red 900 */
+  --border: oklch(0.25 0 0);
+  --input: oklch(0.25 0 0);
+  --ring: oklch(0.58 0.24 353);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar: oklch(0.2 0 0);
+  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(0.58 0.24 353);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.25 0 0);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.25 0 0);
+  --sidebar-ring: oklch(0.58 0.24 353);
 }
 
 @layer base {

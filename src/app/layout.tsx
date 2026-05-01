@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { UserProvider } from "@/contexts/UserContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { ThemeProvider } from "@/components/theme-provider";
 
 // Google Font - Poppins
 const poppins = Poppins({
@@ -28,12 +29,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} antialiased`}>
-        <UserProvider>
-          <CartProvider>
-            {children}
-            <Toaster richColors />
-          </CartProvider>
-        </UserProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <UserProvider>
+            <CartProvider>
+              {children}
+              <Toaster richColors />
+            </CartProvider>
+          </UserProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

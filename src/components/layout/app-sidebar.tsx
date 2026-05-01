@@ -66,11 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* Logo */}
         <div className="flex mt-5 px-5">
           <Link href="/" className="flex items-center gap-2">
-            <Image
-              src={logo}
-              className="max-h-10 w-fit dark:invert"
-              alt="FoodHub"
-            />
+            <Image src={logo} className="max-h-10 w-fit" alt="FoodHub" />
           </Link>
         </div>
         {routes.map((item) => (

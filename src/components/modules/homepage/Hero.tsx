@@ -22,7 +22,7 @@ export default function Hero({
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
         {/* Address Search Bar */}
         <div className="mb-8">
-          <div className="relative flex flex-col sm:flex-row gap-3 items-stretch sm:items-center bg-white rounded-xl shadow-lg border border-gray-100 p-2 sm:p-3 focus-within:shadow-xl focus-within:border-primary/20 transition-all duration-200">
+          <div className="relative flex flex-col sm:flex-row gap-3 items-stretch sm:items-center bg-background rounded-xl shadow-lg border border-border p-2 sm:p-3 focus-within:shadow-xl focus-within:border-primary/20 transition-all duration-200">
             {/* Location Icon */}
             <div className="flex items-center justify-center sm:justify-start px-3 sm:px-4 text-muted-foreground">
               <MapPin
@@ -35,14 +35,14 @@ export default function Hero({
             <Input
               type="text"
               placeholder="Enter your delivery address"
-              className="flex-1 border-0 shadow-none focus-visible:ring-0 text-base sm:text-lg h-auto py-2 sm:py-3 px-0"
+              className="flex-1 border-0 shadow-none focus-visible:ring-0 text-base sm:text-lg h-auto py-2 sm:py-3 px-2 sm:px-3"
               aria-label="Delivery address input"
             />
 
             {/* Find Food Button */}
             <Button
               asChild
-              className="w-full sm:w-auto bg-[#e21b70] hover:bg-[#c1185f] text-white font-semibold px-6 sm:px-8 py-2 sm:py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+              className="w-full sm:w-auto font-semibold px-6 sm:px-8 py-2 sm:py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <Link href="/browse">Find Food</Link>
             </Button>
@@ -58,7 +58,7 @@ export default function Hero({
                   key={category.id}
                   asChild
                   variant="outline"
-                  className="cursor-pointer gap-2 px-4 py-2 text-sm font-medium bg-pink-50 hover:bg-[#e21b70] hover:text-white border-pink-100 hover:border-[#e21b70] transition-all duration-200"
+                  className="cursor-pointer gap-2 px-4 py-2 text-sm font-medium bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground border-transparent hover:border-primary transition-all duration-200"
                 >
                   <Link href={`/browse?category=${category.id}`}>
                     <span className="text-base" aria-hidden="true">
@@ -87,7 +87,7 @@ export default function Hero({
           <Button
             asChild
             variant="outline"
-            className="border-2 border-[#e21b70] text-[#e21b70] bg-transparent hover:bg-[#e21b70] hover:text-white font-semibold px-6 sm:px-8 py-2 sm:py-3 rounded-lg transition-all duration-200"
+            className="border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground font-semibold px-6 sm:px-8 py-2 sm:py-3 rounded-lg transition-all duration-200"
           >
             <Link href="/restaurants">Browse All Restaurants</Link>
           </Button>

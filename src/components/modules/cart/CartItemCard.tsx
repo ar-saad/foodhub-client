@@ -12,7 +12,7 @@ export default function CartItemCard({ item }: { item: CartItemType }) {
   return (
     <div className="flex gap-3 py-3 border-b last:border-b-0">
       {/* Thumbnail */}
-      <div className="relative w-16 h-16 shrink-0 rounded-md overflow-hidden bg-gray-100">
+      <div className="relative w-16 h-16 shrink-0 rounded-md overflow-hidden bg-muted">
         {item.meal.image ? (
           <Image
             src={item.meal.image}

@@ -46,7 +46,7 @@ export default function DualActionSplitSection({
             className={cn(
               "group relative overflow-hidden rounded-2xl",
               "min-h-100 md:min-h-120",
-              "border-2 border-pink-100",
+              "border-2 border-border",
               "p-8 md:p-10 lg:p-12",
               "shadow-md hover:shadow-2xl",
               "transition-all duration-300 ease-out",
@@ -55,11 +55,9 @@ export default function DualActionSplitSection({
               "cursor-pointer",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4",
               "focus-visible:ring-offset-background",
-              "hover:border-pink-200",
+              "hover:border-primary/50",
+              "bg-secondary/30",
             )}
-            style={{
-              backgroundColor: "oklch(0.98 0.01 353)",
-            }}
             aria-label="Browse restaurants by cuisine type"
           >
             {/* Category Emoji Grid */}
@@ -73,12 +71,12 @@ export default function DualActionSplitSection({
                       className={cn(
                         "w-14 h-14 md:w-16 md:h-16 text-4xl",
                         "rounded-full",
-                        "bg-linear-to-br from-pink-100 to-pink-200",
+                        "bg-background",
                         "shadow-md",
                         "flex items-center justify-center",
-                        "border-2 border-white",
+                        "border-2 border-border",
                         "relative overflow-hidden",
-                        "hover:ring-2 hover:ring-pink-400 transition-all duration-200",
+                        "hover:ring-2 hover:ring-primary transition-all duration-200",
                       )}
                       aria-label={`Browse ${cat.name}`}
                     >
@@ -109,7 +107,6 @@ export default function DualActionSplitSection({
             {/* CTA Button */}
             <Button
               className={cn(
-                "bg-[#e21b70] hover:bg-[#c1185f] text-white",
                 "font-semibold shadow-lg",
                 "px-6 py-3 rounded-lg",
                 "transition-all duration-200",
@@ -136,7 +133,7 @@ export default function DualActionSplitSection({
             className={cn(
               "group relative overflow-hidden rounded-2xl",
               "min-h-100 md:min-h-120",
-              "border-2 border-pink-100",
+              "border-2 border-border",
               "p-8 md:p-10 lg:p-12",
               "shadow-md hover:shadow-2xl",
               "transition-all duration-300 ease-out",
@@ -145,11 +142,9 @@ export default function DualActionSplitSection({
               "cursor-pointer",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4",
               "focus-visible:ring-offset-background",
-              "hover:border-pink-200",
+              "hover:border-primary/50",
+              "bg-secondary/30",
             )}
-            style={{
-              backgroundColor: "oklch(0.98 0.01 353)",
-            }}
             aria-label="Browse all restaurants"
           >
             {/* Restaurant Logos Grid */}
@@ -163,12 +158,12 @@ export default function DualActionSplitSection({
                       className={cn(
                         "w-14 h-14 md:w-16 md:h-16",
                         "rounded-full",
-                        "bg-linear-to-br from-pink-100 to-pink-200",
+                        "bg-background",
                         "shadow-md",
                         "flex items-center justify-center",
-                        "border-2 border-white",
+                        "border-2 border-border",
                         "relative overflow-hidden",
-                        "hover:ring-2 hover:ring-pink-400 transition-all duration-200",
+                        "hover:ring-2 hover:ring-primary transition-all duration-200",
                       )}
                       aria-label={`View ${provider.name}`}
                     >
@@ -191,10 +186,10 @@ export default function DualActionSplitSection({
                       className={cn(
                         "w-14 h-14 md:w-16 md:h-16",
                         "rounded-full",
-                        "bg-linear-to-br from-pink-100 to-pink-200",
+                        "bg-background",
                         "shadow-md",
                         "flex items-center justify-center",
-                        "border-2 border-white",
+                        "border-2 border-border",
                         "relative overflow-hidden",
                       )}
                       aria-hidden="true"
@@ -217,7 +212,6 @@ export default function DualActionSplitSection({
             {/* CTA Button */}
             <Button
               className={cn(
-                "bg-[#e21b70] hover:bg-[#c1185f] text-white",
                 "font-semibold shadow-lg",
                 "px-6 py-3 rounded-lg",
                 "transition-all duration-200",

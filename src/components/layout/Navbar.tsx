@@ -8,6 +8,7 @@ import CartSheet from "@/components/modules/cart/CartSheet";
 
 import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/common/ThemeToggle";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -128,7 +129,7 @@ const Navbar = ({
 
   return (
     <section
-      className={cn("py-4 w-full sticky top-0 z-10 bg-white", className)}
+      className={cn("py-4 w-full sticky top-0 z-10 bg-background", className)}
     >
       <div className="container mx-auto px-4">
         {/* Desktop Menu */}
@@ -138,7 +139,7 @@ const Navbar = ({
             <Link href={logo.url} className="flex items-center gap-2">
               <Image
                 src={navLogo}
-                className="max-h-8 w-fit dark:invert"
+                className="max-h-8 w-fit"
                 alt={logo.alt}
               />
             </Link>
@@ -165,6 +166,7 @@ const Navbar = ({
                 </span>
               )}
             </Button>
+            <ThemeToggle />
             {user ? (
               <>
                 {user?.role === UserRoles.customer && (
@@ -202,7 +204,7 @@ const Navbar = ({
             <a href={logo.url} className="flex items-center gap-2">
               <Image
                 src={navLogo}
-                className="max-h-8 w-fit dark:invert"
+                className="max-h-8 w-fit"
                 alt={logo.alt}
               />
             </a>
@@ -221,6 +223,7 @@ const Navbar = ({
                   </span>
                 )}
               </Button>
+              <ThemeToggle />
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline" size="icon">
@@ -233,7 +236,7 @@ const Navbar = ({
                       <a href={logo.url} className="flex items-center gap-2">
                         <Image
                           src={navLogo}
-                          className="max-h-8 w-fit dark:invert"
+                          className="max-h-8 w-fit"
                           alt={logo.alt}
                         />
                       </a>
@@ -318,4 +321,4 @@ const renderMobileMenuItem = (item: MenuItem) => {
   );
 };
 
-export { Navbar };
+export default Navbar;

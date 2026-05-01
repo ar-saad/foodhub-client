@@ -98,13 +98,13 @@ export default function RestaurantReviewsSection({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+          <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <MessageSquare className="w-8 h-8 text-purple-600" />
             Customer Reviews
           </h2>
           <div className="flex items-center gap-3 mt-2">
             <StarRating value={Math.round(overallAverage)} readonly size="md" />
-            <span className="text-slate-600">
+            <span className="text-muted-foreground">
               {overallAverage.toFixed(1)} overall ({totalReviews}{" "}
               {totalReviews === 1 ? "review" : "reviews"})
             </span>

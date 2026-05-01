@@ -95,7 +95,7 @@ function ProviderCard({ provider }: ProviderCardProps) {
       <Card
         className={cn(
           "w-full max-w-[320px] h-120 mx-auto",
-          "bg-white shadow-sm hover:shadow-xl",
+          "bg-card text-card-foreground shadow-sm hover:shadow-xl",
           "rounded-xl overflow-hidden",
           "transition-all duration-200 ease-out",
           "hover:-translate-y-2",
@@ -124,7 +124,7 @@ function ProviderCard({ provider }: ProviderCardProps) {
           <div className="absolute top-2 right-2">
             <Badge
               variant={provider.isOpen ? "default" : "secondary"}
-              className={provider.isOpen ? "bg-green-600" : "bg-gray-500"}
+              className={provider.isOpen ? "bg-emerald-500 hover:bg-emerald-600 text-white border-transparent" : ""}
             >
               {provider.isOpen ? "Open" : "Closed"}
             </Badge>

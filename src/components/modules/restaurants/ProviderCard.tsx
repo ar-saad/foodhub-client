@@ -13,7 +13,7 @@ interface ProviderCardProps {
 export default function ProviderCard({ provider }: ProviderCardProps) {
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full py-0 gap-2">
-      <div className="relative h-48 w-full bg-gray-100">
+      <div className="relative h-48 w-full bg-muted">
         {provider.logo ? (
           <Image
             src={provider.logo}
@@ -30,7 +30,7 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
         <div className="absolute top-2 right-2">
           <Badge
             variant={provider.isOpen ? "default" : "secondary"}
-            className={provider.isOpen ? "bg-green-600" : "bg-gray-500"}
+            className={provider.isOpen ? "bg-emerald-500 hover:bg-emerald-600 text-white border-transparent" : ""}
           >
             {provider.isOpen ? "Open" : "Closed"}
           </Badge>

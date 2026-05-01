@@ -213,7 +213,7 @@ export default function UserProfileUpdateForm() {
                     disabled
                     className="bg-slate-100 cursor-not-allowed"
                   />
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Email cannot be changed
                   </p>
                 </Field>

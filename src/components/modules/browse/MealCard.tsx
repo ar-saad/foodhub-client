@@ -24,7 +24,7 @@ export default function MealCard({ meal }: { meal: Meal }) {
         key={meal.id}
         className="overflow-hidden hover:shadow-lg transition-shadow duration-300 gap-2 flex flex-col h-full py-0"
       >
-        <div className="relative w-full bg-gray-100 h-52">
+        <div className="relative w-full bg-muted h-52">
           {meal.image ? (
             <Image
               src={meal.image}
