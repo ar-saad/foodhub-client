@@ -87,7 +87,7 @@ export default function ContactPage() {
                     className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:shadow-md transition-shadow duration-200"
                   >
                     <div
-                      className={`w-11 h-11 rounded-xl ${detail.bg} flex items-center justify-center flex-shrink-0`}
+                      className={`w-11 h-11 rounded-xl ${detail.bg} flex items-center justify-center shrink-0`}
                     >
                       <detail.icon
                         className={`w-5 h-5 ${detail.color}`}

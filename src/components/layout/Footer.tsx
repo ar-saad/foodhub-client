@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
 
-import { Logo, LogoImage, LogoText } from "@/components/ui/logo";
+import { Logo } from "@/components/ui/logo";
 import footerLogo from "../../../public/logo.webp";
 import Image from "next/image";
+import Link from "next/link";
 
 interface MenuItem {
   title: string;
@@ -40,41 +41,32 @@ const Footer = ({
   tagline = "Discover & Order Delicious Meals",
   menuItems = [
     {
-      title: "Product",
+      title: "Explore",
       links: [
-        { text: "Overview", url: "#" },
-        { text: "Pricing", url: "#" },
-        { text: "Marketplace", url: "#" },
-        { text: "Features", url: "#" },
-        { text: "Integrations", url: "#" },
-        { text: "Pricing", url: "#" },
+        { text: "Home", url: "/" },
+        { text: "Browse Cuisines", url: "/browse" },
+        { text: "All Restaurants", url: "/restaurants" },
       ],
     },
     {
-      title: "Company",
+      title: "Join Us",
       links: [
-        { text: "About", url: "#" },
-        { text: "Team", url: "#" },
-        { text: "Blog", url: "#" },
-        { text: "Careers", url: "#" },
-        { text: "Contact", url: "#" },
-        { text: "Privacy", url: "#" },
+        { text: "Become a Partner", url: "/become-partner" },
+        { text: "Login to Account", url: "/login" },
+        { text: "Register Now", url: "/register" },
       ],
     },
     {
-      title: "Resources",
+      title: "Support",
       links: [
-        { text: "Help", url: "#" },
-        { text: "Sales", url: "#" },
-        { text: "Advertise", url: "#" },
+        { text: "About Us", url: "/about" },
+        { text: "Contact Us", url: "/contact" },
+        { text: "FAQ", url: "/#faq-heading" },
       ],
     },
   ],
   copyright = `© ${new Date().getFullYear()} FoodHub. All rights reserved.`,
-  bottomLinks = [
-    { text: "Terms and Conditions", url: "#" },
-    { text: "Privacy Policy", url: "#" },
-  ],
+  bottomLinks = [],
 }: Footer2Props) => {
   return (
     <section
@@ -116,7 +108,7 @@ const Footer = ({
                         key={linkIdx}
                         className="text-sm font-medium hover:text-primary text-center md:text-left"
                       >
-                        <a href={link.url}>{link.text}</a>
+                        <Link href={link.url}>{link.text}</Link>
                       </li>
                     ))}
                   </ul>
@@ -129,7 +121,7 @@ const Footer = ({
             <ul className="flex flex-wrap justify-center gap-4">
               {bottomLinks.map((link, linkIdx) => (
                 <li key={linkIdx} className="underline hover:text-primary">
-                  <a href={link.url}>{link.text}</a>
+                  <Link href={link.url}>{link.text}</Link>
                 </li>
               ))}
             </ul>

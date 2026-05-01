@@ -54,7 +54,7 @@ function StarRatingDisplay({ rating }: { rating: number }) {
             "w-4 h-4",
             i < rating
               ? "fill-amber-400 text-amber-400"
-              : "fill-muted text-muted"
+              : "fill-muted text-muted",
           )}
           aria-hidden="true"
         />
@@ -79,8 +79,7 @@ export default function Testimonials() {
             id="testimonials-heading"
             className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground"
           >
-            What Our Customers{" "}
-            <span className="text-primary">Say</span>
+            What Our Customers <span className="text-primary">Say</span>
           </h2>
           <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             Don&apos;t just take our word for it — hear from the people who
@@ -96,7 +95,7 @@ export default function Testimonials() {
               className={cn(
                 "group relative flex flex-col p-6 rounded-2xl border border-border bg-card",
                 "hover:shadow-xl hover:border-primary/30",
-                "transition-all duration-300"
+                "transition-all duration-300",
               )}
             >
               {/* Quote icon */}
@@ -119,7 +118,7 @@ export default function Testimonials() {
               {/* Author */}
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center text-white text-sm font-bold flex-shrink-0`}
+                  className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center text-white text-sm font-bold shrink-0`}
                   aria-hidden="true"
                 >
                   {t.avatar}
