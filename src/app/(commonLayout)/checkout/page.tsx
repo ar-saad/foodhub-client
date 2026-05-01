@@ -321,6 +321,12 @@ export default function CheckoutPage() {
                   ? "By placing this order, you agree to pay the total amount upon delivery."
                   : "You will be redirected to Stripe to securely complete your payment."}
               </p>
+
+              <div className="text-[10px] text-muted-foreground text-center pt-2 border-t border-border/50">
+                By placing this order, you agree to FoodHub&apos;s{" "}
+                <Link href="/terms" className="underline hover:text-primary">Terms of Service</Link>{" "}
+                and <Link href="/privacy" className="underline hover:text-primary">Privacy Policy</Link>.
+              </div>
             </CardContent>
           </Card>
         </div>

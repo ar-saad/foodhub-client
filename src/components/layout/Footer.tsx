@@ -66,7 +66,10 @@ const Footer = ({
     },
   ],
   copyright = `© ${new Date().getFullYear()} FoodHub. All rights reserved.`,
-  bottomLinks = [],
+  bottomLinks = [
+    { text: "Privacy Policy", url: "/privacy" },
+    { text: "Terms and Conditions", url: "/terms" },
+  ],
 }: Footer2Props) => {
   return (
     <section
