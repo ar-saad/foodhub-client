@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { getPlatformStats } from "@/actions/stats.actions";
 import {
   Heart,
   Zap,
@@ -50,14 +51,29 @@ const values = [
   },
 ];
 
-const stats = [
-  { icon: Store, value: "50+", label: "Partner Restaurants" },
-  { icon: Users, value: "8,500+", label: "Happy Customers" },
-  { icon: Target, value: "12,000+", label: "Orders Delivered" },
-  { icon: Zap, value: "~30 min", label: "Avg. Delivery Time" },
-];
+export default async function AboutPage() {
+  const statsResponse = await getPlatformStats();
+  const platformStats = statsResponse.data;
 
-export default function AboutPage() {
+  const stats = [
+    {
+      icon: Store,
+      value: platformStats?.restaurantCount?.toLocaleString() ?? "—",
+      label: "Partner Restaurants",
+    },
+    {
+      icon: Users,
+      value: platformStats?.customerCount?.toLocaleString() ?? "—",
+      label: "Happy Customers",
+    },
+    {
+      icon: Target,
+      value: platformStats?.orderCount?.toLocaleString() ?? "—",
+      label: "Orders Delivered",
+    },
+    { icon: Zap, value: "~30 min", label: "Avg. Delivery Time" },
+  ];
+
   return (
     <main className="bg-background">
       {/* Hero */}

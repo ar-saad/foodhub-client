@@ -5,6 +5,8 @@ import { Store, ShoppingBag, Users, Clock } from "lucide-react";
 
 interface StatsSectionProps {
   restaurantCount?: number;
+  customerCount?: number;
+  orderCount?: number;
 }
 
 interface Stat {
@@ -57,7 +59,9 @@ function StatCard({ stat, active }: { stat: Stat; active: boolean }) {
 }
 
 export default function StatsSection({
-  restaurantCount = 50,
+  restaurantCount = 0,
+  customerCount = 0,
+  orderCount = 0,
 }: StatsSectionProps) {
   const ref = useRef<HTMLElement>(null);
   const [active, setActive] = useState(false);
@@ -87,7 +91,7 @@ export default function StatsSection({
     },
     {
       icon: ShoppingBag,
-      value: 12000,
+      value: orderCount,
       suffix: "+",
       label: "Orders Delivered",
       color: "text-violet-500",
@@ -95,7 +99,7 @@ export default function StatsSection({
     },
     {
       icon: Users,
-      value: 8500,
+      value: customerCount,
       suffix: "+",
       label: "Happy Customers",
       color: "text-emerald-500",

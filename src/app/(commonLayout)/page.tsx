@@ -10,15 +10,18 @@ import FAQ from "@/components/modules/homepage/FAQ";
 import BecomePartnerCTA from "@/components/modules/homepage/BecomePartnerCTA";
 import { getCategories } from "@/actions/category.actions";
 import { getAllProviders } from "@/actions/provider.actions";
+import { getPlatformStats } from "@/actions/stats.actions";
 
 export default async function HomePage() {
-  const [categoriesResponse, providersResponse] = await Promise.all([
+  const [categoriesResponse, providersResponse, statsResponse] = await Promise.all([
     getCategories({ limit: "99999" }),
     getAllProviders(),
+    getPlatformStats(),
   ]);
 
   const allCategories = categoriesResponse.data?.data?.data ?? [];
   const allProviders = providersResponse.data.data ?? [];
+  const stats = statsResponse.data;
 
   // Shuffle and pick up to 16 random categories, then split into 2 sets of 8
   const categoriesShuffled = [...allCategories].sort(() => Math.random() - 0.5);
@@ -40,7 +43,11 @@ export default async function HomePage() {
       {/* 4. How It Works */}
       <HowItWorks />
       {/* 5. Stats */}
-      <StatsSection restaurantCount={allProviders.length} />
+      <StatsSection
+        restaurantCount={stats?.restaurantCount ?? allProviders.length}
+        customerCount={stats?.customerCount ?? 0}
+        orderCount={stats?.orderCount ?? 0}
+      />
       {/* 6. Why Choose FoodHub */}
       <WhyChooseFoodHub />
       {/* 7. Explore (Dual Action) */}
