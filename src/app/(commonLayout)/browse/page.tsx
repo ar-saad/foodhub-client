@@ -85,7 +85,7 @@ export default function BrowseMealPage() {
           sortBy: searchParams.get("sort") || "name",
           sortOrder: searchParams.get("order") || "asc",
           page: "1",
-          limit: "9",
+          limit: "12",
         });
         if (result.error) {
           setError(result.error.message);
@@ -137,7 +137,7 @@ export default function BrowseMealPage() {
           sortBy: searchParams.get("sort") || "name",
           sortOrder: searchParams.get("order") || "asc",
           page: String(page),
-          limit: "9",
+          limit: "12",
         });
         if (result.error) {
           setError(result.error.message);
@@ -187,7 +187,7 @@ export default function BrowseMealPage() {
   }
 
   return (
-    <div className="container max-w-7xl mx-auto px-5 my-5">
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 my-8">
       {/* Search Bar */}
       <div className="mb-6 mt-2">
         <form

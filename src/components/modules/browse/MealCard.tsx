@@ -19,12 +19,12 @@ export default function MealCard({ meal }: { meal: Meal }) {
   };
 
   return (
-    <Link href={`/browse/${meal.id}`} className="block">
+    <Link href={`/browse/${meal.id}`} className="block group">
       <Card
         key={meal.id}
-        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 gap-2 flex flex-col h-full py-0"
+        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border-border/50 bg-card shadow-sm pt-0 pb-2 space-y-0 gap-1"
       >
-        <div className="relative w-full bg-muted h-52">
+        <div className="relative w-full bg-muted h-40">
           {meal.image ? (
             <Image
               src={meal.image}
@@ -50,10 +50,10 @@ export default function MealCard({ meal }: { meal: Meal }) {
           )}
         </div>
 
-        <CardContent className="p-4 flex-1 flex flex-col">
-          <div className="space-y-2 flex-1 flex flex-col">
+        <CardContent className="p-2.5 flex flex-col">
+          <div className="space-y-1 flex flex-col">
             <div className="flex items-start justify-between">
-              <h3 className="font-semibold text-lg line-clamp-1">
+              <h3 className="font-semibold text-base line-clamp-1 group-hover:text-primary transition-colors">
                 {meal.name}
               </h3>
             </div>
@@ -64,16 +64,14 @@ export default function MealCard({ meal }: { meal: Meal }) {
               </Badge>
             )}
 
-            <p className="text-sm text-muted-foreground line-clamp-2 min-h-10">
+            <p className="text-[11px] text-muted-foreground line-clamp-2 min-h-7 leading-tight">
               {meal.description}
             </p>
-
             {meal.providerProfile && (
               <p className="text-xs text-muted-foreground">
                 by {meal.providerProfile.name}
               </p>
             )}
-
             {meal.averageRating != null && meal.averageRating > 0 && (
               <div className="flex items-center gap-1.5">
                 <StarRating
@@ -87,13 +85,11 @@ export default function MealCard({ meal }: { meal: Meal }) {
                 </span>
               </div>
             )}
-            {/* Spacer to push footer down if needed */}
-            <div className="flex-1" />
           </div>
         </CardContent>
 
-        <CardFooter className="p-4 pt-0 flex items-center justify-between mt-auto">
-          <div className="text-2xl font-bold text-primary">
+        <CardFooter className="p-2.5 pt-0 flex items-center justify-between mt-auto">
+          <div className="text-lg font-bold text-primary">
             ৳{Number(meal.price).toFixed(2)}
           </div>
           <Button
