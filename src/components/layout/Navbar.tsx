@@ -69,18 +69,11 @@ const Navbar = ({
   },
   menu = [
     { title: "Home", url: "/" },
-    {
-      title: "Browse",
-      url: "/browse",
-    },
-    {
-      title: "Restaurants",
-      url: "/restaurants",
-    },
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-    },
+    { title: "Browse", url: "/browse" },
+    { title: "Restaurants", url: "/restaurants" },
+    { title: "About", url: "/about" },
+    { title: "Contact", url: "/contact" },
+    { title: "Dashboard", url: "/dashboard" },
   ],
   auth = {
     login: { title: "Login", url: "/login" },
@@ -170,11 +163,11 @@ const Navbar = ({
             {user ? (
               <>
                 {user?.role === UserRoles.customer && (
-                  <Link href="/become-partner">
-                    <Button className="bg-orange-400 hover:bg-orange-500">
-                      Become a Partner
-                    </Button>
-                  </Link>
+                <Link href="/become-partner">
+                  <Button>
+                    Become a Partner
+                  </Button>
+                </Link>
                 )}
                 <ProfileDropdownMenu />
               </>
@@ -268,7 +261,7 @@ const Navbar = ({
                       ) : (
                         <>
                           <Link href="/become-partner">
-                            <Button className="bg-orange-400 hover:bg-orange-500">
+                            <Button>
                               Become a Partner
                             </Button>
                           </Link>
