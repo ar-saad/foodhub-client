@@ -121,6 +121,49 @@ export function LoginForm({
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
               </FieldSeparator>
+
+              {/* Demo Login Buttons */}
+              <div className="flex flex-col gap-2 mb-2">
+                <div className="text-xs font-medium text-center text-muted-foreground uppercase tracking-wider">Demo Accounts</div>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button 
+                    type="button" 
+                    variant="secondary" 
+                    size="sm" 
+                    className="text-xs h-8"
+                    onClick={() => {
+                      form.setFieldValue("email", "admin@foodhub.com");
+                      form.setFieldValue("password", "A9!fR@2kM#7ZxQ$P");
+                    }}
+                  >
+                    Admin
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="secondary" 
+                    size="sm"
+                    className="text-xs h-8"
+                    onClick={() => {
+                      form.setFieldValue("email", "pizzas@admin.com");
+                      form.setFieldValue("password", "password1234");
+                    }}
+                  >
+                    Provider
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="secondary" 
+                    size="sm"
+                    className="text-xs h-8"
+                    onClick={() => {
+                      form.setFieldValue("email", "customer@foodhub.com");
+                      form.setFieldValue("password", "password1234");
+                    }}
+                  >
+                    Customer
+                  </Button>
+                </div>
+              </div>
               <form.Field
                 name="email"
                 children={(field) => {
