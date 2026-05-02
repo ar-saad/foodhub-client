@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { getUsers } from "@/actions/user.actions";
 import { User } from "@/types/user.type";
 import { PaginationControlsProps } from "@/types/pagination.type";
-import { Input } from "@/components/ui/input";
-import PaginationControls from "@/components/ui/pagination-controls";
 import UserListBlock from "@/components/modules/adminDashboard/users/UserListBlock";
-import { Loader2, Search } from "lucide-react";
+import { SortingState, PaginationState } from "@tanstack/react-table";
 
 export default function AdminDashboardUserListPage() {
   const router = useRouter();
@@ -19,15 +17,21 @@ export default function AdminDashboardUserListPage() {
   const [meta, setMeta] = useState<PaginationControlsProps | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Initialize from URL only once
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || "",
-  );
+  // Derive state from URL
+  const currentPage = Number(searchParams.get("page") || "1");
+  const currentLimit = Number(searchParams.get("limit") || "10");
+  const currentSortBy = searchParams.get("sortBy") || "name";
+  const currentSortOrder = searchParams.get("sortOrder") || "asc";
+  const currentSearch = searchParams.get("search") || "";
 
-  // Update URL with new parameters
+  // Stable ref for searchParams to avoid callback identity churn
+  const searchParamsRef = useRef(searchParams);
+  searchParamsRef.current = searchParams;
+
+  // Update URL with new parameters (stable — does not depend on searchParams)
   const updateURL = useCallback(
     (updates: Record<string, string>) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParamsRef.current.toString());
 
       Object.entries(updates).forEach(([key, value]) => {
         if (value) {
@@ -39,20 +43,52 @@ export default function AdminDashboardUserListPage() {
 
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
-    [pathname, router, searchParams],
+    [pathname, router],
   );
 
-  // Debounced search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const currentSearch = searchParams.get("search") || "";
-      if (searchQuery !== currentSearch) {
-        updateURL({ search: searchQuery, page: "" });
-      }
-    }, 400);
+  // Tanstack sorting state derived from URL
+  const sortingState: SortingState = currentSortBy
+    ? [{ id: currentSortBy, desc: currentSortOrder === "desc" }]
+    : [];
 
-    return () => clearTimeout(timer);
-  }, [searchQuery, searchParams, updateURL]);
+  const onSortingChange = useCallback(
+    (state: SortingState) => {
+      if (state.length > 0) {
+        updateURL({
+          sortBy: state[0].id,
+          sortOrder: state[0].desc ? "desc" : "asc",
+          page: "",
+        });
+      } else {
+        updateURL({ sortBy: "", sortOrder: "", page: "" });
+      }
+    },
+    [updateURL],
+  );
+
+  // Tanstack pagination state derived from URL
+  const paginationState: PaginationState = {
+    pageIndex: currentPage - 1,
+    pageSize: currentLimit,
+  };
+
+  const onPaginationChange = useCallback(
+    (state: PaginationState) => {
+      updateURL({
+        page: String(state.pageIndex + 1),
+        limit: String(state.pageSize),
+      });
+    },
+    [updateURL],
+  );
+
+  // Search handler
+  const onSearchChange = useCallback(
+    (value: string) => {
+      updateURL({ search: value, page: "" });
+    },
+    [updateURL],
+  );
 
   // Fetch users whenever URL params change
   useEffect(() => {
@@ -61,11 +97,11 @@ export default function AdminDashboardUserListPage() {
 
       try {
         const result = await getUsers({
-          search: searchParams.get("search") || "",
-          page: searchParams.get("page") || "1",
-          limit: searchParams.get("limit") || "10",
-          sortBy: searchParams.get("sortBy") || "name",
-          sortOrder: searchParams.get("sortOrder") || "asc",
+          search: currentSearch,
+          page: String(currentPage),
+          limit: String(currentLimit),
+          sortBy: currentSortBy,
+          sortOrder: currentSortOrder,
         });
 
         if (result.error) {
@@ -90,29 +126,24 @@ export default function AdminDashboardUserListPage() {
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">User List</h1>
 
-      {/* Search Input */}
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-        <Input
-          type="text"
-          placeholder="Search by name or phone..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9"
-        />
-      </div>
-
-      {/* Table */}
-      {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-        </div>
-      ) : (
-        <UserListBlock users={users} meta={meta} />
-      )}
-
-      {/* Pagination */}
-      {meta && meta.totalPages > 1 && <PaginationControls meta={meta} />}
+      <UserListBlock
+        users={users}
+        meta={meta}
+        isLoading={loading}
+        search={{
+          initialValue: currentSearch,
+          placeholder: "Search by name or phone...",
+          onDebouncedChange: onSearchChange,
+        }}
+        sorting={{
+          state: sortingState,
+          onSortingChange,
+        }}
+        pagination={{
+          state: paginationState,
+          onPaginationChange,
+        }}
+      />
     </div>
   );
 }

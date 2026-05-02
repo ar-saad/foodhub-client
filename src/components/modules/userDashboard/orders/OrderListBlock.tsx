@@ -24,6 +24,9 @@ import { Eye, Ban } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
+import { ColumnDef } from "@tanstack/react-table";
+import DataTable from "@/components/shared/table/DataTable";
+
 type OrderListRole = "CUSTOMER" | "PROVIDER" | "ADMIN";
 
 interface OrderListBlockProps {
@@ -31,6 +34,11 @@ interface OrderListBlockProps {
   meta: PaginationControlsProps | null;
   role: OrderListRole;
   detailBaseUrl?: string;
+  isLoading?: boolean;
+  search?: any;
+  pagination?: any;
+  sorting?: any;
+  filters?: any;
 }
 
 const statusVariantMap: Record<
@@ -79,152 +87,168 @@ export default function OrderListBlock({
   meta,
   role,
   detailBaseUrl,
+  isLoading,
+  search,
+  pagination,
+  sorting,
+  filters,
 }: OrderListBlockProps) {
   const router = useRouter();
-  const currentPage = meta?.page ?? 1;
-  const pageSize = meta?.limit ?? 10;
 
   const showCustomerCol = role === "PROVIDER" || role === "ADMIN";
   const showProviderCol = role === "CUSTOMER" || role === "ADMIN";
 
-  const colCount =
-    6 + (showCustomerCol ? 1 : 0) + (showProviderCol ? 1 : 0) + 1; // always show action column
+  const columns: ColumnDef<Order>[] = [
+    {
+      accessorKey: "id",
+      header: "Order ID",
+      cell: ({ row }) => (
+        <span className="font-mono text-xs" title={row.original.id}>
+          {row.original.id.slice(0, 8)}…
+        </span>
+      ),
+    },
+    ...(showProviderCol
+      ? [
+          {
+            accessorKey: "providerProfile.name",
+            header: "Restaurant",
+            cell: ({ row }: any) => (
+              <span className="font-medium">
+                {row.original.providerProfile?.name ?? "—"}
+              </span>
+            ),
+          },
+        ]
+      : []),
+    ...(showCustomerCol
+      ? [
+          {
+            accessorKey: "customer.name",
+            header: "Customer",
+            cell: ({ row }: any) => row.original.customer?.name ?? "—",
+          },
+        ]
+      : []),
+    {
+      accessorKey: "items",
+      header: "Items",
+      enableSorting: false,
+      cell: ({ row }) => (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-default">
+                {row.original.orderItems.length}{" "}
+                {row.original.orderItems.length === 1 ? "item" : "items"}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-xs">
+              <ul className="text-xs space-y-1">
+                {row.original.orderItems.map((item, i) => (
+                  <li key={i}>
+                    {item.meal?.name ?? item.mealId.slice(0, 8)}
+                    {" × "}
+                    {item.quantity} — {formatCurrency(item.price)}
+                  </li>
+                ))}
+              </ul>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ),
+    },
+    {
+      accessorKey: "totalAmount",
+      header: () => <div className="text-right">Total</div>,
+      cell: ({ row }) => (
+        <div className="text-right font-semibold">
+          {formatCurrency(row.original.totalAmount)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "paymentType",
+      header: "Payment",
+      cell: ({ row }) => <Badge variant="outline">{row.original.paymentType}</Badge>,
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <Badge
+          variant={statusVariantMap[row.original.status]}
+          className={statusColorMap[row.original.status]}
+        >
+          {formatStatus(row.original.status)}
+        </Badge>
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Date",
+      cell: ({ row }) => (
+        <span className="text-xs text-muted-foreground">
+          {formatDate(row.original.createdAt)}
+        </span>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Action",
+      enableSorting: false,
+      cell: ({ row }) => {
+        const order = row.original;
+        return (
+          <div className="flex items-center gap-2">
+            {detailBaseUrl && (
+              <Link href={`${detailBaseUrl}/${order.id}`}>
+                <Eye className="h-5 w-5 text-primary" />
+              </Link>
+            )}
+            {role === "CUSTOMER" && order.status === OrderStatus.PLACED && (
+              <ConfirmationDialog
+                title="Cancel Order"
+                description="Are you sure you want to cancel this order? This action cannot be undone."
+                variant="destructive"
+                trigger={<Ban className="h-4 w-4" />}
+                actionFunction={async () => {
+                  const toastId = toast.loading("Cancelling order...");
+                  const result = await updateOrderStatus({
+                    orderId: order.id,
+                    status: OrderStatus.CANCELLED,
+                  });
+                  if (result.error) {
+                    toast.error(result.error.message, {
+                      id: toastId,
+                    });
+                  } else {
+                    toast.success("Order cancelled.", {
+                      id: toastId,
+                    });
+                    router.refresh();
+                  }
+                }}
+              />
+            )}
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
-    <div className="border rounded-md p-1">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-10">#</TableHead>
-            <TableHead>Order ID</TableHead>
-            {showProviderCol && <TableHead>Restaurant</TableHead>}
-            {showCustomerCol && <TableHead>Customer</TableHead>}
-            <TableHead>Items</TableHead>
-            <TableHead className="text-right">Total</TableHead>
-            <TableHead>Payment</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {orders.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={colCount}
-                className="text-center py-8 text-muted-foreground"
-              >
-                No orders found
-              </TableCell>
-            </TableRow>
-          ) : (
-            orders.map((order, index) => (
-              <TableRow key={order.id}>
-                <TableCell className="w-10">
-                  {(currentPage - 1) * pageSize + index + 1}
-                </TableCell>
-
-                <TableCell className="font-mono text-xs" title={order.id}>
-                  {order.id.slice(0, 8)}…
-                </TableCell>
-
-                {showProviderCol && (
-                  <TableCell className="font-medium">
-                    {order.providerProfile?.name ?? "—"}
-                  </TableCell>
-                )}
-
-                {showCustomerCol && (
-                  <TableCell>{order.customer?.name ?? "—"}</TableCell>
-                )}
-
-                <TableCell>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="cursor-default">
-                          {order.orderItems.length}{" "}
-                          {order.orderItems.length === 1 ? "item" : "items"}
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="max-w-xs">
-                        <ul className="text-xs space-y-1">
-                          {order.orderItems.map((item, i) => (
-                            <li key={i}>
-                              {item.meal?.name ?? item.mealId.slice(0, 8)}
-                              {" × "}
-                              {item.quantity} — {formatCurrency(item.price)}
-                            </li>
-                          ))}
-                        </ul>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableCell>
-
-                <TableCell className="text-right font-semibold">
-                  {formatCurrency(order.totalAmount)}
-                </TableCell>
-
-                <TableCell>
-                  <Badge variant="outline">{order.paymentType}</Badge>
-                </TableCell>
-
-                <TableCell>
-                  <Badge
-                    variant={statusVariantMap[order.status]}
-                    className={statusColorMap[order.status]}
-                  >
-                    {formatStatus(order.status)}
-                  </Badge>
-                </TableCell>
-
-                <TableCell className="text-xs text-muted-foreground">
-                  {formatDate(order.createdAt)}
-                </TableCell>
-
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    {detailBaseUrl && (
-                      <Link href={`${detailBaseUrl}/${order.id}`}>
-                        <Eye className="h-5 w-5 text-primary" />
-                      </Link>
-                    )}
-                    {role === "CUSTOMER" &&
-                      order.status === OrderStatus.PLACED && (
-                        <ConfirmationDialog
-                          title="Cancel Order"
-                          description="Are you sure you want to cancel this order? This action cannot be undone."
-                          variant="destructive"
-                          trigger={<Ban className="h-4 w-4" />}
-                          actionFunction={async () => {
-                            const toastId = toast.loading(
-                              "Cancelling order...",
-                            );
-                            const result = await updateOrderStatus({
-                              orderId: order.id,
-                              status: OrderStatus.CANCELLED,
-                            });
-                            if (result.error) {
-                              toast.error(result.error.message, {
-                                id: toastId,
-                              });
-                            } else {
-                              toast.success("Order cancelled.", {
-                                id: toastId,
-                              });
-                              router.refresh();
-                            }
-                          }}
-                        />
-                      )}
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    <DataTable
+      data={orders}
+      columns={columns}
+      meta={meta ?? undefined}
+      isLoading={isLoading}
+      search={search}
+      pagination={pagination}
+      sorting={sorting}
+      filters={filters}
+      emptyMessage="No orders found"
+    />
   );
 }
+

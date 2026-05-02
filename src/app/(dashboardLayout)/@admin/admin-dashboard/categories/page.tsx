@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { getCategories } from "@/actions/category.actions";
 import { Category } from "@/types/category.type";
 import { PaginationControlsProps } from "@/types/pagination.type";
-import { Input } from "@/components/ui/input";
-import PaginationControls from "@/components/ui/pagination-controls";
 import CategoryListBlock from "@/components/modules/adminDashboard/category/CategoryListBlock";
-import { Loader2, Search } from "lucide-react";
+import { SortingState, PaginationState } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
@@ -22,15 +20,20 @@ export default function CategoryListPage() {
   const [meta, setMeta] = useState<PaginationControlsProps | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Initialize from URL only once
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || "",
-  );
+  // Derive state from URL
+  const currentPage = Number(searchParams.get("page") || "1");
+  const currentLimit = Number(searchParams.get("limit") || "10");
+  const currentSortBy = searchParams.get("sortBy") || "name";
+  const currentSortOrder = searchParams.get("sortOrder") || "asc";
+  const currentSearch = searchParams.get("search") || "";
 
-  // Update URL with new parameters
+  // Stable ref for searchParams
+  const searchParamsRef = useRef(searchParams);
+  searchParamsRef.current = searchParams;
+
   const updateURL = useCallback(
     (updates: Record<string, string>) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParamsRef.current.toString());
 
       Object.entries(updates).forEach(([key, value]) => {
         if (value) {
@@ -42,20 +45,52 @@ export default function CategoryListPage() {
 
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
-    [pathname, router, searchParams],
+    [pathname, router],
   );
 
-  // Debounced search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const currentSearch = searchParams.get("search") || "";
-      if (searchQuery !== currentSearch) {
-        updateURL({ search: searchQuery, page: "" });
-      }
-    }, 400);
+  // Sorting
+  const sortingState: SortingState = currentSortBy
+    ? [{ id: currentSortBy, desc: currentSortOrder === "desc" }]
+    : [];
 
-    return () => clearTimeout(timer);
-  }, [searchQuery, searchParams, updateURL]); // Add all dependencies
+  const onSortingChange = useCallback(
+    (state: SortingState) => {
+      if (state.length > 0) {
+        updateURL({
+          sortBy: state[0].id,
+          sortOrder: state[0].desc ? "desc" : "asc",
+          page: "",
+        });
+      } else {
+        updateURL({ sortBy: "", sortOrder: "", page: "" });
+      }
+    },
+    [updateURL],
+  );
+
+  // Pagination
+  const paginationState: PaginationState = {
+    pageIndex: currentPage - 1,
+    pageSize: currentLimit,
+  };
+
+  const onPaginationChange = useCallback(
+    (state: PaginationState) => {
+      updateURL({
+        page: String(state.pageIndex + 1),
+        limit: String(state.pageSize),
+      });
+    },
+    [updateURL],
+  );
+
+  // Search
+  const onSearchChange = useCallback(
+    (value: string) => {
+      updateURL({ search: value, page: "" });
+    },
+    [updateURL],
+  );
 
   // Fetch categories whenever URL params change
   useEffect(() => {
@@ -65,11 +100,11 @@ export default function CategoryListPage() {
       try {
         const result = await getCategories(
           {
-            search: searchParams.get("search") || "",
-            page: searchParams.get("page") || "1",
-            limit: searchParams.get("limit") || "10",
-            sortBy: searchParams.get("sortBy") || "name",
-            sortOrder: searchParams.get("sortOrder") || "asc",
+            search: currentSearch,
+            page: String(currentPage),
+            limit: String(currentLimit),
+            sortBy: currentSortBy,
+            sortOrder: currentSortOrder,
           },
           { revalidate: 0 },
         );
@@ -102,37 +137,34 @@ export default function CategoryListPage() {
             Manage your food categories
           </p>
         </div>
-        <Link href="/admin-dashboard/categories/create">
-          <Button size="lg" className="gap-2">
-            <Plus className="size-4" />
-            Add New Category
-          </Button>
-        </Link>
       </div>
 
-      {/* Search Input */}
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-        <Input
-          type="text"
-          placeholder="Search by name..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9"
-        />
-      </div>
-
-      {/* Table */}
-      {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-        </div>
-      ) : (
-        <CategoryListBlock categories={categories} meta={meta} />
-      )}
-
-      {/* Pagination */}
-      {meta && meta.totalPages > 1 && <PaginationControls meta={meta} />}
+      <CategoryListBlock
+        categories={categories}
+        meta={meta}
+        isLoading={loading}
+        search={{
+          initialValue: currentSearch,
+          placeholder: "Search by name...",
+          onDebouncedChange: onSearchChange,
+        }}
+        sorting={{
+          state: sortingState,
+          onSortingChange,
+        }}
+        pagination={{
+          state: paginationState,
+          onPaginationChange,
+        }}
+        toolbarAction={
+          <Link href="/admin-dashboard/categories/create">
+            <Button size="lg" className="gap-2">
+              <Plus className="size-4" />
+              Add New Category
+            </Button>
+          </Link>
+        }
+      />
     </div>
   );
 }

@@ -19,15 +19,29 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+import { ColumnDef } from "@tanstack/react-table";
+import DataTable from "@/components/shared/table/DataTable";
+
 export default function MealListBlock({
   meals,
   meta,
+  isLoading,
+  search,
+  pagination,
+  sorting,
+  filters,
+  toolbarAction,
 }: {
   meals: Meal[];
-  meta: PaginationControlsProps;
+  meta?: PaginationControlsProps;
+  isLoading?: boolean;
+  search?: any;
+  pagination?: any;
+  sorting?: any;
+  filters?: any;
+  toolbarAction?: React.ReactNode;
 }) {
   const router = useRouter();
-  const { limit: pageSize, page: currentPage, count, totalPages } = meta;
 
   const handleDelete = async (id: string) => {
     const toastId = toast.loading("Deleting meal.");
@@ -41,67 +55,76 @@ export default function MealListBlock({
     router.refresh();
   };
 
+  const columns: ColumnDef<Meal>[] = [
+    {
+      accessorKey: "name",
+      header: "Meal name",
+    },
+    {
+      accessorKey: "category.name",
+      header: "Category",
+      cell: ({ row }: any) => row.original.category?.name,
+    },
+    {
+      accessorKey: "price",
+      header: "Price",
+    },
+    {
+      accessorKey: "isAvailable",
+      header: "Available",
+      cell: ({ row }) => (
+        <Badge variant={row.original.isAvailable ? "default" : "secondary"}>
+          {row.original.isAvailable ? "Available" : "Unavailable"}
+        </Badge>
+      ),
+    },
+    {
+      accessorKey: "isFeatured",
+      header: "Featured",
+      cell: ({ row }) => (
+        <Badge variant={row.original.isFeatured ? "default" : "secondary"}>
+          {row.original.isFeatured ? "Featured" : "Not featured"}
+        </Badge>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Action",
+      enableSorting: false,
+      cell: ({ row }) => {
+        const meal = row.original;
+        return (
+          <div className="flex items-center gap-1">
+            <Link href={`/provider-dashboard/meals/${meal.id}/update`}>
+              <Button variant="ghost">
+                <SquarePen className="h-4 w-4" />
+              </Button>
+            </Link>
+            <ConfirmationDialog
+              title="Confirm"
+              description="Are you sure you want to delete this meal?"
+              actionFunction={() => handleDelete(meal.id)}
+              trigger={<Trash2 className="text-red-500 h-4 w-4 cursor-pointer" />}
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
-    <div className="border rounded-md p-1">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead></TableHead>
-            <TableHead>Meal name</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Available</TableHead>
-            <TableHead>Featured</TableHead>
-            <TableHead>Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {meals.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={7}
-                className="text-center py-8 text-muted-foreground"
-              >
-                No meals found
-              </TableCell>
-            </TableRow>
-          ) : (
-            meals.map((meal, index) => (
-              <TableRow key={meal.id}>
-                <TableCell className="w-10">
-                  {(currentPage - 1) * pageSize + index + 1}
-                </TableCell>
-                <TableCell>{meal.name}</TableCell>
-                <TableCell>{meal.category?.name}</TableCell>
-                <TableCell>{meal.price}</TableCell>
-                <TableCell>
-                  <Badge variant={meal.isAvailable ? "default" : "secondary"}>
-                    {meal.isAvailable ? "Available" : "Unavailable"}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <Badge variant={meal.isFeatured ? "default" : "secondary"}>
-                    {meal.isFeatured ? "Featured" : "Not featured"}
-                  </Badge>
-                </TableCell>
-                <TableCell className="flex items-center gap-1">
-                  <Link href={`/provider-dashboard/meals/${meal.id}/update`}>
-                    <Button variant="ghost">
-                      <SquarePen />
-                    </Button>
-                  </Link>
-                  <ConfirmationDialog
-                    title="Confirm"
-                    description="Are you sure you want to delete this meal?"
-                    actionFunction={() => handleDelete(meal.id)}
-                    trigger={<Trash2 className="text-red-500" />}
-                  />
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    <DataTable
+      data={meals}
+      columns={columns}
+      meta={meta}
+      isLoading={isLoading}
+      search={search}
+      pagination={pagination}
+      sorting={sorting}
+      filters={filters}
+      toolbarAction={toolbarAction}
+      emptyMessage="No meals found"
+    />
   );
 }
+

@@ -1,14 +1,19 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { getOrders } from "@/actions/order.actions";
-import { Order } from "@/types/order.type";
+import { Order, OrderStatus } from "@/types/order.type";
 import { PaginationControlsProps } from "@/types/pagination.type";
-import PaginationControls from "@/components/ui/pagination-controls";
 import OrderListBlock from "@/components/modules/userDashboard/orders/OrderListBlock";
-import { Loader2 } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
+import { SortingState, PaginationState } from "@tanstack/react-table";
+import { DataTableFilterValues, DataTableFilterValue } from "@/components/shared/table/DataTableFilters";
+
+const ORDER_STATUS_FILTER_OPTIONS = Object.values(OrderStatus).map((s) => ({
+  label: s.replace(/_/g, " "),
+  value: s,
+}));
 
 export default function ProviderOrderPage() {
   const { user } = useUser();
@@ -20,9 +25,19 @@ export default function ProviderOrderPage() {
   const [meta, setMeta] = useState<PaginationControlsProps | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Derive state from URL
+  const currentPage = Number(searchParams.get("page") || "1");
+  const currentLimit = Number(searchParams.get("limit") || "10");
+  const currentSortBy = searchParams.get("sortBy") || "createdAt";
+  const currentSortOrder = searchParams.get("sortOrder") || "desc";
+  const currentStatus = searchParams.get("status") || "";
+
+  const searchParamsRef = useRef(searchParams);
+  searchParamsRef.current = searchParams;
+
   const updateURL = useCallback(
     (updates: Record<string, string>) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParamsRef.current.toString());
       Object.entries(updates).forEach(([key, value]) => {
         if (value) {
           params.set(key, value);
@@ -32,8 +47,55 @@ export default function ProviderOrderPage() {
       });
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
-    [pathname, router, searchParams],
+    [pathname, router],
   );
+
+  // Sorting
+  const sortingState: SortingState = currentSortBy
+    ? [{ id: currentSortBy, desc: currentSortOrder === "desc" }]
+    : [];
+
+  const onSortingChange = useCallback(
+    (state: SortingState) => {
+      if (state.length > 0) {
+        updateURL({ sortBy: state[0].id, sortOrder: state[0].desc ? "desc" : "asc", page: "" });
+      } else {
+        updateURL({ sortBy: "", sortOrder: "", page: "" });
+      }
+    },
+    [updateURL],
+  );
+
+  // Pagination
+  const paginationState: PaginationState = {
+    pageIndex: currentPage - 1,
+    pageSize: currentLimit,
+  };
+
+  const onPaginationChange = useCallback(
+    (state: PaginationState) => {
+      updateURL({ page: String(state.pageIndex + 1), limit: String(state.pageSize) });
+    },
+    [updateURL],
+  );
+
+  // Filters
+  const filterValues: DataTableFilterValues = {
+    status: currentStatus || undefined,
+  };
+
+  const onFilterChange = useCallback(
+    (filterId: string, value: DataTableFilterValue | undefined) => {
+      if (filterId === "status") {
+        updateURL({ status: (value as string) || "", page: "" });
+      }
+    },
+    [updateURL],
+  );
+
+  const onClearAllFilters = useCallback(() => {
+    updateURL({ status: "", page: "" });
+  }, [updateURL]);
 
   useEffect(() => {
     async function loadOrders() {
@@ -41,11 +103,11 @@ export default function ProviderOrderPage() {
       try {
         const result = await getOrders({
           providerId: user?.providerProfile?.id,
-          page: searchParams.get("page") || "1",
-          limit: searchParams.get("limit") || "10",
-          status: searchParams.get("status") || "",
-          sortBy: searchParams.get("sortBy") || "createdAt",
-          sortOrder: searchParams.get("sortOrder") || "desc",
+          page: String(currentPage),
+          limit: String(currentLimit),
+          status: currentStatus,
+          sortBy: currentSortBy,
+          sortOrder: currentSortOrder,
         });
 
         if (result.error) {
@@ -70,20 +132,35 @@ export default function ProviderOrderPage() {
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">Orders</h1>
 
-      {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-        </div>
-      ) : (
-        <OrderListBlock
-          orders={orders}
-          meta={meta}
-          role="PROVIDER"
-          detailBaseUrl="/provider-dashboard/orders"
-        />
-      )}
-
-      {meta && meta.totalPages > 1 && <PaginationControls meta={meta} />}
+      <OrderListBlock
+        orders={orders}
+        meta={meta}
+        role="PROVIDER"
+        detailBaseUrl="/provider-dashboard/orders"
+        isLoading={loading}
+        sorting={{
+          state: sortingState,
+          onSortingChange,
+        }}
+        pagination={{
+          state: paginationState,
+          onPaginationChange,
+        }}
+        filters={{
+          configs: [
+            {
+              id: "status",
+              label: "Status",
+              type: "single-select" as const,
+              options: ORDER_STATUS_FILTER_OPTIONS,
+            },
+          ],
+          values: filterValues,
+          onFilterChange,
+          onClearAll: onClearAllFilters,
+        }}
+      />
     </div>
   );
 }
+
