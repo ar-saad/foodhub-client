@@ -39,6 +39,7 @@ export default function BrowseMealPage() {
   const currentCategory = searchParams.get("category") || "";
   const currentSort = searchParams.get("sort") || "name";
   const currentOrder = searchParams.get("order") || "asc";
+  const currentAvailable = searchParams.get("available") || "";
 
   // Update URL with new parameters
   const updateURL = useCallback(
@@ -84,6 +85,7 @@ export default function BrowseMealPage() {
           categoryId: searchParams.get("category") || undefined,
           sortBy: searchParams.get("sort") || "name",
           sortOrder: searchParams.get("order") || "asc",
+          isAvailable: searchParams.get("available") || undefined,
           page: "1",
           limit: "12",
         });
@@ -136,6 +138,7 @@ export default function BrowseMealPage() {
           categoryId: searchParams.get("category") || undefined,
           sortBy: searchParams.get("sort") || "name",
           sortOrder: searchParams.get("order") || "asc",
+          isAvailable: searchParams.get("available") || undefined,
           page: String(page),
           limit: "12",
         });
@@ -155,9 +158,12 @@ export default function BrowseMealPage() {
     fetchMoreMeals();
   }, [page, searchParams, loading]);
 
-  // Handle filter changes
   const handleCategoryChange = (categoryId: string) => {
     updateURL({ category: categoryId });
+  };
+
+  const handleAvailableChange = (available: string) => {
+    updateURL({ available });
   };
 
   const handleSortChange = (sort: string, order: string) => {
@@ -222,9 +228,11 @@ export default function BrowseMealPage() {
         <BrowseMealSidebarBlock
           categories={categories}
           currentCategory={currentCategory}
+          currentAvailable={currentAvailable}
           currentSort={currentSort}
           currentOrder={currentOrder}
           onCategoryChange={handleCategoryChange}
+          onAvailableChange={handleAvailableChange}
           onSortChange={handleSortChange}
           onClearFilters={handleClearFilters}
         />

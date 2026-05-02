@@ -11,6 +11,7 @@ export async function getMeals(params: {
   categoryId?: string;
   providerId?: string;
   isFeatured?: string;
+  isAvailable?: string;
 }) {
   return await mealService.getAll(params);
 }

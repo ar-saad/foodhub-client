@@ -16,9 +16,11 @@ import { SlidersHorizontal, X } from "lucide-react";
 interface BrowseMealSidebarProps {
   categories: Category[];
   currentCategory: string;
+  currentAvailable: string;
   currentSort: string;
   currentOrder: string;
   onCategoryChange: (categoryId: string) => void;
+  onAvailableChange: (available: string) => void;
   onSortChange: (sort: string, order: string) => void;
   onClearFilters: () => void;
 }
@@ -26,13 +28,15 @@ interface BrowseMealSidebarProps {
 export default function BrowseMealSidebarBlock({
   categories,
   currentCategory,
+  currentAvailable,
   currentSort,
   currentOrder,
   onCategoryChange,
+  onAvailableChange,
   onSortChange,
   onClearFilters,
 }: BrowseMealSidebarProps) {
-  const hasActiveFilters = currentCategory || currentSort !== "name";
+  const hasActiveFilters = currentCategory || currentAvailable || currentSort !== "name";
 
   return (
     <aside className="w-full lg:w-72 shrink-0">
@@ -106,6 +110,27 @@ export default function BrowseMealSidebarBlock({
                   {category.name}
                 </Button>
               ))}
+            </div>
+          </div>
+
+          {/* Availability Filters */}
+          <div className="space-y-3">
+            <Label className="text-sm font-semibold">Availability</Label>
+            <div className="space-y-2">
+              <Button
+                variant={!currentAvailable ? "default" : "outline"}
+                className="w-full justify-start"
+                onClick={() => onAvailableChange("")}
+              >
+                All Meals
+              </Button>
+              <Button
+                variant={currentAvailable === "true" ? "default" : "outline"}
+                className="w-full justify-start"
+                onClick={() => onAvailableChange("true")}
+              >
+                Available Only
+              </Button>
             </div>
           </div>
 

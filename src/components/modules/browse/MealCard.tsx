@@ -88,21 +88,34 @@ export default function MealCard({ meal }: { meal: Meal }) {
           </div>
         </CardContent>
 
-        <CardFooter className="p-2.5 pt-0 flex items-center justify-between mt-auto">
-          <div className="text-lg font-bold text-primary">
-            ৳{Number(meal.price).toFixed(2)}
+        <CardFooter className="p-2.5 pt-0 flex flex-col gap-2 mt-auto">
+          <div className="flex items-center justify-between w-full">
+            <div className="text-lg font-bold text-primary">
+              ৳{Number(meal.price).toFixed(2)}
+            </div>
+            <Button
+              size="icon"
+              variant="outline"
+              disabled={!meal.isAvailable}
+              className="h-8 w-8 rounded-full border-primary/20 hover:bg-primary/10 hover:text-primary"
+              onClick={(e) => {
+                e.preventDefault();
+                handleAddToCart();
+              }}
+              title="Add to Cart"
+            >
+              <ShoppingCart className="h-4 w-4" />
+            </Button>
           </div>
           <Button
             size="sm"
-            disabled={!meal.isAvailable}
-            className="gap-2"
+            variant="default"
+            className="w-full text-xs"
             onClick={(e) => {
-              e.preventDefault();
-              handleAddToCart();
+              // Let the parent Link handle the navigation
             }}
           >
-            <ShoppingCart className="h-4 w-4" />
-            Add to Cart
+            View Details
           </Button>
         </CardFooter>
       </Card>

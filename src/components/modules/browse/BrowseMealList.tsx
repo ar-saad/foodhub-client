@@ -26,7 +26,7 @@ export default function BrowseMealListBlock({
     return (
       <div className="flex-1">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          {Array.from({ length: 6 }).map((_, index) => (
+          {Array.from({ length: 12 }).map((_, index) => (
             <Card key={index} className="overflow-hidden">
               <Skeleton className="h-48 w-full" />
               <CardContent className="p-4 space-y-3">

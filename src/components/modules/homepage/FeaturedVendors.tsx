@@ -101,6 +101,7 @@ function ProviderCard({ provider }: ProviderCardProps) {
           "hover:-translate-y-2",
           "cursor-pointer",
           "flex flex-col",
+          "py-0",
         )}
         role="article"
         aria-label={`Restaurant: ${provider.name}`}
@@ -124,7 +125,11 @@ function ProviderCard({ provider }: ProviderCardProps) {
           <div className="absolute top-2 right-2">
             <Badge
               variant={provider.isOpen ? "default" : "secondary"}
-              className={provider.isOpen ? "bg-emerald-500 hover:bg-emerald-600 text-white border-transparent" : ""}
+              className={
+                provider.isOpen
+                  ? "bg-emerald-500 hover:bg-emerald-600 text-white border-transparent"
+                  : ""
+              }
             >
               {provider.isOpen ? "Open" : "Closed"}
             </Badge>
