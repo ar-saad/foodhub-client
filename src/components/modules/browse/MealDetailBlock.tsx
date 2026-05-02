@@ -76,9 +76,34 @@ export default function MealDetailBlock({ meal }: MealDetailBlockProps) {
         {/* Details */}
         <div className="space-y-6">
           <div className="space-y-3">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-              {meal.name}
-            </h1>
+            <div className="space-y-1.5">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+                {meal.name}
+              </h1>
+              {meal.providerProfile && (
+                <Link
+                  href={`/restaurants/${meal.providerProfile.id}`}
+                  className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors group"
+                >
+                  <div className="w-6 h-6 rounded-full overflow-hidden bg-muted border flex items-center justify-center shrink-0">
+                    {meal.providerProfile.logo ? (
+                      <Image
+                        src={meal.providerProfile.logo}
+                        alt={meal.providerProfile.name}
+                        width={24}
+                        height={24}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <Store className="h-3.5 w-3.5" />
+                    )}
+                  </div>
+                  <span className="font-medium text-[15px] group-hover:underline">
+                    {meal.providerProfile.name}
+                  </span>
+                </Link>
+              )}
+            </div>
 
             <div className="flex items-center gap-3 flex-wrap">
               {meal.category && (
@@ -103,11 +128,58 @@ export default function MealDetailBlock({ meal }: MealDetailBlockProps) {
             </div>
           </div>
 
-          <p className="text-muted-foreground leading-relaxed text-lg">
-            {meal.description}
-          </p>
+          <div className="space-y-6">
+            {/* Description / Overview Section */}
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold text-foreground">
+                Description & Overview
+              </h3>
+              <p className="text-muted-foreground leading-relaxed text-[15px]">
+                {meal.description || "No description provided."}
+              </p>
+            </div>
 
-          <Separator />
+            {/* Key Information / Specifications Section */}
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold text-foreground">
+                Key Information
+              </h3>
+              <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-sm text-muted-foreground bg-muted/40 p-4 rounded-lg border border-border/50">
+                <div className="flex flex-col">
+                  <span className="font-medium text-foreground">Category</span>
+                  <span>{meal.category?.name || "Uncategorized"}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium text-foreground">
+                    Availability
+                  </span>
+                  <span
+                    className={
+                      meal.isAvailable
+                        ? "text-green-600 dark:text-green-500 font-medium"
+                        : "text-destructive font-medium"
+                    }
+                  >
+                    {meal.isAvailable ? "Available" : "Currently Unavailable"}
+                  </span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium text-foreground">
+                    Featured Status
+                  </span>
+                  <span>
+                    {meal.isFeatured ? "Featured Dish" : "Standard Listing"}
+                  </span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium text-foreground">
+                    Base Price
+                  </span>
+                  <span>৳{Number(meal.price).toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Price + Add to Cart */}
           <div className="flex items-center justify-between">
@@ -126,45 +198,6 @@ export default function MealDetailBlock({ meal }: MealDetailBlockProps) {
           </div>
 
           <Separator />
-
-          {/* Restaurant info */}
-          {meal.providerProfile && (
-            <Card>
-              <CardContent className="p-4">
-                <Link
-                  href={`/restaurants/${meal.providerProfile.id}`}
-                  className="flex items-center gap-4 group"
-                >
-                  <div className="shrink-0 w-12 h-12 rounded-full bg-muted flex items-center justify-center overflow-hidden">
-                    {meal.providerProfile.logo ? (
-                      <Image
-                        src={meal.providerProfile.logo}
-                        alt={meal.providerProfile.name}
-                        width={48}
-                        height={48}
-                        className="object-cover w-full h-full"
-                      />
-                    ) : (
-                      <Store className="h-6 w-6 text-muted-foreground" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold group-hover:text-primary transition-colors">
-                      {meal.providerProfile.name}
-                    </p>
-                    {meal.providerProfile.address && (
-                      <p className="text-sm text-muted-foreground flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5 shrink-0" />
-                        <span className="truncate">
-                          {meal.providerProfile.address}
-                        </span>
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
     </>
